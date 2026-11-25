@@ -150,12 +150,14 @@
     const categorySelect = form.querySelector("[data-filter-category]");
     const storageSelect = form.querySelector("[data-filter-storage]");
     const colourSelect = form.querySelector("[data-filter-colour]");
-    const conditionSelect = form.querySelector("[data-filter-condition]");\n    const compatibilitySelect = form.querySelector("[data-filter-compatibility]");
+    const conditionSelect = form.querySelector("[data-filter-condition]");
+    const compatibilitySelect = form.querySelector("[data-filter-compatibility]");
     const selectedCategory = categorySelect && categorySelect.selectedOptions[0]
       ? normalizeFilterValue(categorySelect.selectedOptions[0].dataset.categoryName)
       : "";
     const selectedStorage = normalizeFilterValue(storageSelect && storageSelect.value);
-    const selectedColour = normalizeFilterValue(colourSelect && colourSelect.value);\n    const selectedCondition = normalizeFilterValue(conditionSelect && conditionSelect.value);\n    const selectedCompatibility = normalizeFilterValue(compatibilitySelect && compatibilitySelect.value);
+    const selectedColour = normalizeFilterValue(colourSelect && colourSelect.value);
+    const selectedCondition = normalizeFilterValue(conditionSelect && conditionSelect.value);\n    const selectedCompatibility = normalizeFilterValue(compatibilitySelect && compatibilitySelect.value);
     const cards = Array.from(grid.querySelectorAll("[data-product-card]"));
     let visible = 0;
     cards.forEach(card => {
