@@ -6,6 +6,7 @@ on:
     branches:
       - main
       - simplify/whatsapp-electronics-catalogue
+      - development/electronics-storefront
 
 permissions:
   contents: read
