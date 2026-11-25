@@ -129,7 +129,7 @@ def collection():
         query = query.filter(Product.category_id.in_(same_name_ids))
     query = apply_catalogue_filters(query, business, selected_storage, selected_colour, selected_condition, selected_compatibility)
     total = query.count()
-    products = query.order_by(func.random()).offset((page - 1) * PAGE_SIZE).limit(PAGE_SIZE).all()
+    products = query.order_by(Product.created_at.desc(), Product.id.desc()).offset((page - 1) * PAGE_SIZE).limit(PAGE_SIZE).all()
     return render_listing(business, products, selected_category, selected_storage, selected_colour, selected_condition, selected_compatibility, page, max((total + PAGE_SIZE - 1) // PAGE_SIZE, 1))
 
 
@@ -154,7 +154,7 @@ def category(slug):
         ordered = query.order_by(case((Product.id == selected_product_id, 0), else_=1),
                                  Product.created_at.desc(), Product.id.desc())
     else:
-        ordered = query.order_by(func.random())
+        ordered = query.order_by(Product.created_at.desc(), Product.id.desc())
     products = ordered.offset((page - 1) * PAGE_SIZE).limit(PAGE_SIZE).all()
     return render_listing(business, products, selected_category, selected_storage, selected_colour,
                           selected_condition, selected_compatibility, page,
