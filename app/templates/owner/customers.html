@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block title %}Customers{% endblock %}
+{% block body %}
+<nav class="navbar bg-white border-bottom px-3"><a class="navbar-brand fw-bold" href="{{ url_for('owner.dashboard') }}">Store Dashboard</a><a class="btn btn-sm btn-dark" href="{{ url_for('owner.dashboard') }}">Overview</a></nav>
+<main class="container py-4"><h1 class="h3">Customers</h1><form class="row g-2 my-3"><div class="col-md-5"><input class="form-control" name="q" value="{{ search }}" placeholder="Search name or phone"></div><div class="col-auto"><button class="btn btn-dark">Search</button></div></form><div class="table-responsive"><table class="table"><thead><tr><th>Name</th><th>Phone</th><th>Address</th><th>Orders</th></tr></thead><tbody>{% for customer in items %}<tr><td>{{ customer.name }}</td><td>{{ customer.phone }}</td><td>{{ customer.address or '-' }}</td><td>{{ customer.created_at.strftime('%Y-%m-%d') }}</td></tr>{% else %}<tr><td colspan="4">No customers found.</td></tr>{% endfor %}</tbody></table></div></main>
+{% endblock %}

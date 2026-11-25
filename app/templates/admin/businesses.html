@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Businesses{% endblock %}
+{% block body %}
+<nav class="navbar navbar-dark bg-dark px-3"><a class="navbar-brand" href="{{ url_for('admin.dashboard') }}">Platform Admin</a><a class="btn btn-outline-light btn-sm" href="{{ url_for('admin.dashboard') }}">Overview</a></nav>
+<main class="container py-4">
+  {% for category, message in get_flashed_messages(with_categories=true) %}<div class="alert alert-{{ category }}">{{ message }}</div>{% endfor %}
+  <div class="d-flex justify-content-between align-items-center mb-3"><h1 class="h3">Businesses</h1></div>
+  <div class="card mb-4"><div class="card-body">
+    <h2 class="h5">Create business</h2>
+    <form method="post" enctype="multipart/form-data">
+      {{ form.hidden_tag() }}
+      <div class="row g-3">
+        {% for field in [form.name, form.slug, form.owner_name, form.owner_email, form.owner_phone, form.contact_email, form.whatsapp_number, form.domain, form.status] %}
+        <div class="col-md-6"><label class="form-label">{{ field.label.text }}</label>{{ field(class="form-control") }}</div>
+        {% endfor %}
+        <div class="col-12"><label class="form-label">Business logo</label>{{ form.logo(class="form-control", accept="image/jpeg,image/png,image/webp") }}</div>
+        <div class="col-12"><label class="form-label">{{ form.description.label.text }}</label>{{ form.description(class="form-control", rows=3) }}</div>
+        <div class="col-12"><label class="form-label">{{ form.address.label.text }}</label>{{ form.address(class="form-control", rows=2) }}</div>
+        <div class="col-12">{{ form.submit(class="btn btn-dark") }}</div>
+      </div>
+    </form>
+  </div></div>
+  <div class="table-responsive"><table class="table align-middle"><thead><tr><th>Name</th><th>Slug</th><th>Status</th><th>Domain</th><th>Created</th><th></th></tr></thead><tbody>
+  {% for business in businesses %}<tr><td>{{ business.name }}</td><td>{{ business.slug }}</td><td><span class="badge text-bg-secondary">{{ business.status }}</span></td><td>{{ business.domains|map(attribute='host')|join(', ') or 'Not assigned' }}</td><td>{{ business.created_at.strftime('%Y-%m-%d') }}</td><td><a class="btn btn-sm btn-outline-dark" href="{{ url_for('admin.edit_business', business_id=business.id) }}">Edit</a></td></tr>{% else %}<tr><td colspan="6">No businesses yet.</td></tr>{% endfor %}
+  </tbody></table></div>
+</main>
+{% endblock %}

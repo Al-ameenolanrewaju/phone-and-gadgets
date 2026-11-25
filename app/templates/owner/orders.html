@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Orders{% endblock %}
+{% block body %}
+<nav class="navbar bg-white border-bottom px-3"><a class="navbar-brand fw-bold" href="{{ url_for('owner.dashboard') }}">Store Dashboard</a><a class="btn btn-sm btn-dark" href="{{ url_for('owner.dashboard') }}">Overview</a></nav>
+<main class="container py-4">
+  <h1 class="h3">Orders</h1>
+  <form class="row g-2 mb-3"><div class="col-auto"><select name="status" class="form-select"><option value="">All statuses</option>{% for value in ['WHATSAPP_CHECKOUT_INITIATED','PENDING','CONFIRMED','PROCESSING','READY_FOR_DELIVERY','COMPLETED','CANCELLED'] %}<option value="{{ value }}" {% if status == value %}selected{% endif %}>{{ value }}</option>{% endfor %}</select></div><div class="col-auto"><button class="btn btn-dark">Filter</button></div></form>
+  <div class="table-responsive"><table class="table"><thead><tr><th>Reference</th><th>Customer</th><th>Status</th><th>Total</th><th>Date</th></tr></thead><tbody>{% for order in items %}<tr><td><a href="{{ url_for('owner.order_detail', order_id=order.id) }}">{{ order.reference }}</a></td><td>{{ order.customer.name }}</td><td>{{ order.status }}</td><td>{{ order.total }}</td><td>{{ order.created_at.strftime('%Y-%m-%d') }}</td></tr>{% else %}<tr><td colspan="5">No orders found.</td></tr>{% endfor %}</tbody></table></div>
+</main>
+{% endblock %}

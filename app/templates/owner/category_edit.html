@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Edit {{ category.name }}{% endblock %}
+{% block body %}
+<nav class="navbar bg-white border-bottom px-3">
+  <a class="navbar-brand fw-bold" href="{{ url_for('owner.dashboard') }}">Store Dashboard</a>
+  <a class="btn btn-sm btn-outline-dark" href="{{ url_for('owner.categories') }}">Back to categories</a>
+</nav>
+<main class="container py-4 py-lg-5" style="max-width:680px">
+  <p class="text-uppercase small fw-semibold text-secondary mb-2" style="letter-spacing:.12em">Category management</p>
+  <h1 class="h2 fw-bold mb-1">Edit category</h1>
+  <p class="text-secondary mb-4">Update the name, URL slug or audience for {{ category.name }}.</p>
+  {% for category_type,message in get_flashed_messages(with_categories=true) %}
+    <div class="alert alert-{{ category_type }}" role="alert">{{ message }}</div>
+  {% endfor %}
+  <div class="card border-0 shadow-sm">
+    <div class="card-body p-4">
+      <form method="post">
+        {{ form.hidden_tag() }}
+        <div class="mb-3">
+          {{ form.name.label(class="form-label fw-semibold small") }}
+          {{ form.name(class="form-control") }}
+          {% for error in form.name.errors %}<div class="small text-danger mt-1">{{ error }}</div>{% endfor %}
+        </div>
+        <div class="mb-3">
+          {{ form.slug.label(class="form-label fw-semibold small") }}
+          {{ form.slug(class="form-control") }}
+          <div class="form-text">Use lowercase letters and hyphens.</div>
+          {% for error in form.slug.errors %}<div class="small text-danger mt-1">{{ error }}</div>{% endfor %}
+        </div>
+        <div class="mb-4">
+          {{ form.gender.label(class="form-label fw-semibold small") }}
+          {{ form.gender(class="form-select") }}
+        </div>
+        <div class="d-flex flex-wrap gap-2">
+          {{ form.submit(class="btn btn-dark px-4", value="Save changes") }}
+          <a class="btn btn-outline-secondary px-4" href="{{ url_for('owner.categories') }}">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</main>
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Products{% endblock %}
+{% block body %}
+<nav class="navbar bg-white border-bottom px-3"><a class="navbar-brand fw-bold" href="{{ url_for('owner.dashboard') }}">Sulex</a><div class="d-flex gap-2"><a class="btn btn-sm btn-outline-dark" href="{{ url_for('owner.product_image_library') }}">Photo library</a><a class="btn btn-sm btn-outline-dark" href="{{ url_for('owner.settings') }}">Store settings / WhatsApp</a><a class="btn btn-sm btn-dark" href="{{ url_for('owner.dashboard') }}">Dashboard</a></div></nav>
+<main class="container py-4" style="max-width:900px">
+  {% for category,message in get_flashed_messages(with_categories=true) %}<div class="alert alert-{{ category }}">{{ message }}</div>{% endfor %}
+  <h1 class="h3 mb-4">Products</h1>
+  <div class="card border-0 shadow-sm mb-4"><div class="card-body p-4">
+    <h2 class="h5 mb-4">Add a product</h2>
+    <form method="post" enctype="multipart/form-data">{{ form.hidden_tag() }}
+      <div class="row g-3">
+      <div class="col-md-8 mb-3"><label class="form-label" for="{{ form.name.id }}">Product name</label>{{ form.name(class="form-control form-control-lg", placeholder="e.g. Classic Abaya") }}{% for error in form.name.errors %}<small class="text-danger">{{ error }}</small>{% endfor %}</div>
+      <div class="col-md-4 mb-3"><label class="form-label" for="{{ form.slug.id }}">URL slug</label>{{ form.slug(class="form-control", placeholder="classic-abaya") }}<div class="form-text">Created automatically when left blank.</div></div>
+      <div class="col-md-4 mb-3"><label class="form-label" for="{{ form.regular_price.id }}">Regular price (₦)</label>{{ form.regular_price(class="form-control form-control-lg", placeholder="e.g. 25000", inputmode="decimal") }}{% for error in form.regular_price.errors %}<small class="text-danger">{{ error }}</small>{% endfor %}</div>
+      <div class="col-md-4 mb-3"><label class="form-label" for="{{ form.discounted_price.id }}">Sale price (₦)</label>{{ form.discounted_price(class="form-control form-control-lg", placeholder="Optional") }}</div>
+      <div class="col-md-4 mb-3"><label class="form-label" for="{{ form.sku.id }}">SKU</label>{{ form.sku(class="form-control", placeholder="Optional") }}</div>
+      <div class="col-md-4 mb-3"><label class="form-label" for="{{ form.category_id.id }}">Category</label><select class="form-select" id="{{ form.category_id.id }}" name="{{ form.category_id.name }}"><option value="">Uncategorised</option>{% for category in categories %}<option value="{{ category.id }}" {% if form.category_id.data|string == category.id|string %}selected{% endif %}>{{ category.name }}{% if category.gender %} · {{ category.gender }}{% endif %}</option>{% endfor %}</select><div class="form-text"><a href="{{ url_for('owner.categories') }}">Manage categories</a></div></div>
+      <div class="col-md-4 mb-3"><label class="form-label" for="{{ form.gender.id }}">Audience</label><select class="form-select" id="{{ form.gender.id }}" name="{{ form.gender.name }}"><option value="Unisex" {% if (form.gender.data or 'Unisex') == 'Unisex' %}selected{% endif %}>Unisex</option><option value="Men" {% if form.gender.data == 'Men' %}selected{% endif %}>Men</option><option value="Women" {% if form.gender.data == 'Women' %}selected{% endif %}>Women</option></select></div>
+      <div class="col-md-4 mb-3"><label class="form-label" for="{{ form.electronics_type.id }}">Product type</label><select class="form-select" id="{{ form.electronics_type.id }}" name="{{ form.electronics_type.name }}"><option value="Ready-to-wear" {% if (form.electronics_type.data or 'Ready-to-wear') == 'Ready-to-wear' %}selected{% endif %}>Ready-to-wear</option><option value="Custom-made" {% if form.electronics_type.data == 'Custom-made' %}selected{% endif %}>Custom-made</option></select></div>
+
+      </div>
+      <div class="mb-3"><label class="form-label" for="{{ form.description.id }}">Description</label>{{ form.description(class="form-control", rows=4, placeholder="Describe the product") }}</div>
+      <div class="mb-3"><label class="form-label">Product photos</label><input type="file" name="images" class="form-control" accept="image/jpeg,image/png,image/webp"><div class="form-text">Upload one clear product photo.</div></div>
+      <div class="mb-3"><label class="form-label">Available storages</label>{{ form.storages(class="form-control", placeholder="S, M, L, XL or Free Storage") }}<div class="form-text">Separate each storage with a comma.</div></div>
+      <div class="mb-4"><label class="form-label">Available colours</label>{{ form.colours(class="form-control", placeholder="Black, Wine, Navy Blue") }}<div class="form-text">Separate each colour with a comma.</div></div>
+      <div class="mb-4 d-flex flex-wrap gap-4"><label class="form-check">{{ form.is_published(class="form-check-input", checked=True) }} <span class="form-check-label">Published</span></label></div>
+      {{ form.submit(class="btn btn-dark btn-lg w-100", value="Save product") }}
+    </form>
+  </div></div>
+  <h2 class="h5 mb-3">Your products</h2>
+  <div class="list-group">{% for product in items %}
+    <div class="list-group-item py-3"><div class="d-flex justify-content-between align-items-start gap-3"><div><strong>{{ product.name }}</strong><div class="text-muted small">₦{{ "{:,.2f}".format(product.price) }} · {{ 'Published' if product.is_published else 'Draft' }}</div></div><div class="d-flex flex-wrap gap-2"><a class="btn btn-sm btn-outline-dark" href="{{ url_for('owner.edit_product', product_id=product.id) }}">Edit</a>{% if product.is_published %}<form method="post" action="{{ url_for('owner.archive_product', product_id=product.id) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="btn btn-sm btn-outline-secondary">Hide</button></form>{% else %}<form method="post" action="{{ url_for('owner.publish_product', product_id=product.id) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="btn btn-sm btn-outline-success">Publish</button></form>{% endif %}</div></div></div>
+  {% else %}<div class="list-group-item text-muted">No products added yet.</div>{% endfor %}</div>
+</main>
+{% endblock %}

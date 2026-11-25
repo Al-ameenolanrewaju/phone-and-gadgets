@@ -1,0 +1,17 @@
+<footer class="store-footer luxury-footer">
+  <div class="luxury-footer-inner">
+    <section class="footer-brand-column">
+      <a class="footer-brand-mark" href="{{ url_for('storefront.home') }}">{{ business.name }}</a>
+      <div class="footer-socials" aria-label="Social links">
+        {% if settings and settings.instagram_url %}<a href="{{ settings.instagram_url }}" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle class="icon-fill" cx="17.5" cy="6.5" r="1"/></svg></a>{% endif %}
+        {% if settings and settings.facebook_url %}<a href="{{ settings.facebook_url }}" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path class="icon-fill" d="M13.5 21v-8h2.7l.4-3.1h-3.1v-2c0-.9.3-1.5 1.6-1.5h1.7V3.6c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.3v2.1H7.3V13h2.8v8z"/></svg></a>{% endif %}
+        {% if settings and settings.tiktok_url %}<a href="{{ settings.tiktok_url }}" target="_blank" rel="noopener noreferrer" aria-label="TikTok"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M14 3v11.1a4.1 4.1 0 1 1-3.5-4.05"/><path d="M14 3c.5 3 2.2 4.8 5 5.2"/></svg></a>{% endif %}
+        {% if settings and settings.x_url %}<a href="{{ settings.x_url }}" target="_blank" rel="noopener noreferrer" aria-label="X"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 3h4.8l11.2 18h-4.8L4 3z"/><path d="M20 3 4 21"/></svg></a>{% endif %}
+        {% if business.contact_email %}<a href="mailto:{{ business.contact_email }}" aria-label="Email"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="2.5" y="4.5" width="19" height="15" rx="2"/><path d="m3.5 6 8.5 7 8.5-7"/></svg></a>{% endif %}
+      </div>
+    </section>
+    <section class="footer-about-column" aria-labelledby="footer-about-title"><h2 id="footer-about-title">About {{ business.name }}</h2><p>{{ (settings.footer_text if settings and settings.footer_text else (settings.about_text if settings and settings.about_text else business.description)) or (business.name ~ ' brings together carefully selected devices made for everyday wear and special occasions.') }}</p></section>
+    <section class="footer-links-column"><h2>Quick Links</h2><a href="{{ url_for('storefront.home') }}">Home</a><a href="{{ url_for('storefront.collection') }}">Collection</a></section>
+  </div>
+  <div class="luxury-footer-bottom"><span>{{ settings.copyright_text if settings and settings.copyright_text else '© ' ~ business.name ~ ' · All rights reserved' }}</span><a href="#top">Back to top ↑</a></div>
+</footer>

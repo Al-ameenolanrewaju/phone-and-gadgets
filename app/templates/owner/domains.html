@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block title %}Domains{% endblock %}
+{% block body %}
+<nav class="navbar bg-white border-bottom px-3"><a class="navbar-brand fw-bold" href="{{ url_for('owner.dashboard') }}">Store Dashboard</a><a class="btn btn-sm btn-dark" href="{{ url_for('owner.settings') }}">Store information</a></nav>
+<main class="container py-4"><h1 class="h3">Store domains</h1><p>Domain registration and DNS/SSL provisioning are managed by the platform administrator. A domain is not connected until verified in Render.</p><div class="table-responsive"><table class="table"><thead><tr><th>Domain</th><th>Primary</th><th>Connection</th><th>SSL</th><th>Verified</th></tr></thead><tbody>{% for domain in domains %}<tr><td>{{ domain.host }}</td><td>{{ 'Yes' if domain.is_primary else 'No' }}</td><td>{{ domain.status }}</td><td>{{ domain.ssl_status }}</td><td>{{ domain.verified_at.strftime('%Y-%m-%d %H:%M UTC') if domain.verified_at else 'Not verified' }}</td></tr>{% else %}<tr><td colspan="5">No domains assigned.</td></tr>{% endfor %}</tbody></table></div></main>
+{% endblock %}

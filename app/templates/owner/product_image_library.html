@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Product photo library{% endblock %}
+{% block body %}
+<nav class="navbar bg-white border-bottom px-3">
+  <a class="navbar-brand fw-bold" href="{{ url_for('owner.dashboard') }}">Store Dashboard</a>
+  <div class="d-flex gap-2"><a class="btn btn-sm btn-outline-dark" href="{{ url_for('owner.products') }}">Products</a><a class="btn btn-sm btn-dark" href="{{ url_for('owner.dashboard') }}">Dashboard</a></div>
+</nav>
+<main class="container py-4" style="max-width:1100px">
+  {% for category,message in get_flashed_messages(with_categories=true) %}<div class="alert alert-{{ category }}">{{ message }}</div>{% endfor %}
+  <div class="mb-4"><p class="text-secondary small mb-1">IMAGE ASSOCIATIONS</p><h1 class="h3 mb-2">Product photo library</h1><p class="text-secondary mb-0">Every saved photo is shown with the product it currently belongs to. If a photo is attached to the wrong product, choose the correct product and reassign it. This changes only the image's product association; it does not delete or replace the image.</p></div>
+  <div class="row g-3">
+    {% for image in images %}
+    <div class="col-6 col-md-4 col-lg-3">
+      <article class="card h-100 shadow-sm">
+        <img src="{{ image.url }}" alt="{{ image.alt_text or 'Stored product photo' }}" class="card-img-top" style="aspect-ratio:3/4;object-fit:contain;background:#f4f1eb" loading="lazy">
+        <div class="card-body">
+          <div class="small text-secondary mb-1">Image #{{ image.id }}</div>
+          <h2 class="h6 mb-1">{{ image.product.name if image.product else 'Unassigned product' }}</h2>
+          <div class="small text-secondary text-break mb-3">{{ image.original_filename or 'Original filename unavailable' }}</div>
+          <form method="post" action="{{ url_for('owner.assign_product_image', image_id=image.id) }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <label class="form-label small" for="target-{{ image.id }}">Assign to product</label>
+            <select class="form-select form-select-sm mb-2" id="target-{{ image.id }}" name="product_id" required>
+              {% for product in products %}<option value="{{ product.id }}" {% if product.id == image.product_id %}selected{% endif %}>{{ product.name }}</option>{% endfor %}
+            </select>
+            <button class="btn btn-sm btn-outline-dark w-100" type="submit" {% if not products %}disabled{% endif %}>Save assignment</button>
+          </form>
+        </div>
+      </article>
+    </div>
+    {% else %}
+    <div class="col-12"><div class="alert alert-light border">No product photos have been uploaded yet.</div></div>
+    {% endfor %}
+  </div>
+</main>
+{% endblock %}

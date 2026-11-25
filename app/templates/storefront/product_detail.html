@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}{{ product.name }} | {{ business.name }}{% endblock %}
+{% block meta_description %}{{ product.description or product.name }}{% endblock %}
+{% block body_class %}electronics-store{% endblock %}
+{% block body %}
+{% include "storefront/_nav.html" %}
+<main class="product-detail-page premium-product-page">
+  <section class="premium-product-layout" data-product-card
+    data-product-id="{{ product.id }}"
+    data-product-slug="{{ product.slug }}"
+    data-product-name="{{ product.name }}"
+    data-product-price="{{ product.price }}"
+    data-product-description="{{ product.description or '' }}"
+    data-product-category="{{ product.category.name if product.category else '' }}"
+    data-product-storages="{{ variants|map(attribute='storage')|unique|join('|') }}"
+    data-product-colours="{{ variants|map(attribute='colour')|unique|join('|') }}">
+    <div class="premium-product-gallery">
+      <div class="premium-product-main-image" data-gallery-main>
+        {% if images %}
+          <img src="{{ images[0].url }}" alt="{{ images[0].alt_text or product.name }}" fetchpriority="high">
+        {% else %}
+          <div class="premium-product-no-image">No product image available</div>
+        {% endif %}
+      </div>
+      {% if images|length > 1 %}
+        <div class="premium-product-thumbnails" aria-label="More photos of {{ product.name }}">
+          {% for image in images[:3] %}
+            <button type="button" class="premium-product-thumb{% if loop.first %} is-active{% endif %}"
+              data-gallery-image="{{ image.url }}"
+              data-gallery-alt="{{ image.alt_text or product.name }}"
+              aria-label="Show product image {{ loop.index }}"
+              aria-pressed="{{ 'true' if loop.first else 'false' }}">
+              <img src="{{ image.url }}" alt="" loading="lazy" decoding="async">
+            </button>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="premium-product-info">
+      {% if product.category %}<p class="premium-product-category">{{ product.category.name|trim }}</p>{% endif %}
+      <h1>{{ product.name }}</h1>
+      <p class="premium-product-price">₦{{ "{:,.0f}".format(product.price) }}</p>
+
+      {% if product.description %}
+        <div class="premium-product-description">{{ product.description }}</div>
+      {% endif %}
+
+      {% if variants %}
+        <section class="premium-product-options" aria-label="Available product options">
+          <h2>Available options</h2>
+          <div class="premium-product-option-list">
+            {% for variant in variants %}
+              <span class="premium-product-option">
+                {% if variant.storage %}<span>{{ variant.storage }}</span>{% endif %}
+                {% if variant.storage and variant.colour %}<span aria-hidden="true">·</span>{% endif %}
+                {% if variant.colour %}<span>{{ variant.colour }}</span>{% endif %}
+              </span>
+            {% endfor %}
+          </div>
+        </section>
+      {% endif %}
+
+      <div class="premium-product-actions">
+        <button class="luxury-button luxury-button-gold premium-add-cart" type="button" data-add-to-cart>
+          <span aria-hidden="true">＋</span> Add to Cart
+        </button>
+        <button class="wishlist-toggle wishlist-toggle-detail premium-save-later" type="button"
+          data-wishlist-toggle aria-pressed="false">
+          <span aria-hidden="true">♡</span> Save for later
+        </button>
+      </div>
+    </div>
+  </section>
+</main>
+{% include "storefront/_footer.html" %}
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/storefront.js') }}?v=9" defer></script>{% endblock %}

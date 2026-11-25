@@ -1,0 +1,20 @@
+{% set cover_image = product.images|first %}
+<article class="product-card luxury-product-card" data-product-card
+  data-product-id="{{ product.id }}" data-product-slug="{{ product.slug }}" data-product-name="{{ product.name }}" data-product-price="{{ product.price }}"
+  data-product-description="{{ product.description or '' }}"
+  data-category-name="{{ product.category.name|trim if product.category else '' }}"
+  data-product-storages="{{ product.variants|selectattr('is_available')|map(attribute='storage')|join('|') }}"
+  data-product-colours="{{ product.variants|selectattr('is_available')|map(attribute='colour')|join('|') }}">
+  <div class="product-photo">
+    <a class="product-card-image-link" href="{{ url_for('storefront.product_detail', slug=product.slug) }}" aria-label="View {{ product.name }}">
+      {% if cover_image %}<img src="{{ cover_image.url }}" alt="{{ cover_image.alt_text or product.name }}" loading="lazy" decoding="async">
+      {% else %}<div class="electronics-placeholder"><span>Photo coming soon</span></div>{% endif %}
+    </a>
+    <button class="product-favourite wishlist-toggle" type="button" data-wishlist-toggle aria-pressed="false" aria-label="Save {{ product.name }} for later">♡</button>
+  </div>
+  <div class="luxury-product-info">
+    <a class="product-card-title-link" href="{{ url_for('storefront.product_detail', slug=product.slug) }}"><h3>{{ product.name }}</h3></a>
+    <p class="luxury-price">₦{{ "{:,.0f}".format(product.price) }}</p>
+    <button class="product-whatsapp-button add-to-cart-button" type="button" data-add-to-cart aria-pressed="false"><span aria-hidden="true">🛒</span> Add to Cart</button>
+  </div>
+</article>

@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% block title %}Manage categories{% endblock %}
+{% block body %}
+<nav class="navbar bg-white border-bottom px-3">
+  <a class="navbar-brand fw-bold" href="{{ url_for('owner.dashboard') }}">Store Dashboard</a>
+  <a class="btn btn-sm btn-outline-dark" href="{{ url_for('owner.dashboard') }}">Overview</a>
+</nav>
+
+<main class="container py-4 py-lg-5" style="max-width:1120px">
+  {% for category,message in get_flashed_messages(with_categories=true) %}
+    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+      {{ message }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  {% endfor %}
+
+  <div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
+    <div>
+      <p class="text-uppercase small fw-semibold text-secondary mb-2" style="letter-spacing:.12em">Store organisation</p>
+      <h1 class="h2 fw-bold mb-1">Category management</h1>
+      <p class="text-secondary mb-0">Create, organise, edit and remove the categories used in your catalogue.</p>
+    </div>
+    <span class="badge rounded-pill text-bg-light border px-3 py-2">{{ items|length }} {{ 'category' if items|length == 1 else 'categories' }}</span>
+  </div>
+
+  <div class="row g-4 align-items-start">
+    <section class="col-lg-4" aria-labelledby="add-category-heading">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body p-4">
+          <div class="mb-3">
+            <span class="d-inline-flex align-items-center justify-content-center rounded-circle bg-light border mb-3" style="width:42px;height:42px">+</span>
+            <h2 id="add-category-heading" class="h5 fw-bold mb-1">Add a category</h2>
+            <p class="small text-secondary mb-0">Add a new category to organise your products.</p>
+          </div>
+          <form method="post">
+            {{ form.hidden_tag() }}
+            <div class="mb-3">
+              {{ form.name.label(class="form-label fw-semibold small") }}
+              {{ form.name(class="form-control", placeholder="e.g. Jalabiya", autocomplete="off") }}
+              {% for error in form.name.errors %}<div class="small text-danger mt-1">{{ error }}</div>{% endfor %}
+            </div>
+            <div class="mb-3">
+              {{ form.slug.label(class="form-label fw-semibold small") }}
+              {{ form.slug(class="form-control", placeholder="e.g. jalabiya", autocomplete="off") }}
+              <div class="form-text">Use lowercase letters and hyphens.</div>
+              {% for error in form.slug.errors %}<div class="small text-danger mt-1">{{ error }}</div>{% endfor %}
+            </div>
+            <div class="mb-4">
+              {{ form.gender.label(class="form-label fw-semibold small") }}
+              {{ form.gender(class="form-select") }}
+            </div>
+            {{ form.submit(class="btn btn-dark w-100 py-2", value="Add category") }}
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <section class="col-lg-8" aria-labelledby="category-list-heading">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+          <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 p-4 border-bottom">
+            <div>
+              <h2 id="category-list-heading" class="h5 fw-bold mb-1">Your categories</h2>
+              <p class="small text-secondary mb-0">These categories are available when you add or edit products.</p>
+            </div>
+          </div>
+          {% if items %}
+            <div class="list-group list-group-flush">
+              {% for item in items %}
+                <div class="list-group-item p-3 p-md-4">
+                  <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+                    <div class="min-w-0">
+                      <div class="fw-semibold">{{ item.name }}</div>
+                      <div class="small text-secondary mt-1">{{ item.slug }}</div>
+                      <span class="badge rounded-pill text-bg-light border mt-2">{{ item.gender or 'Unisex' }}</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2 ms-auto">
+                      <a class="btn btn-sm btn-outline-dark px-3" href="{{ url_for('owner.edit_category', category_id=item.id) }}">Edit</a>
+                      <form method="post" action="{{ url_for('owner.delete_category', category_id=item.id) }}" onsubmit="return confirm('Delete the {{ item.name|e }} category? Products assigned to it must be moved or uncategorised first.');">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button class="btn btn-sm btn-outline-danger px-3" type="submit">Remove</button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          {% else %}
+            <div class="text-center px-4 py-5">
+              <div class="fw-semibold mb-1">No categories yet</div>
+              <p class="small text-secondary mb-0">Use the form to create your first product category.</p>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+{% endblock %}

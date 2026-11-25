@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Edit {{ business.name }}{% endblock %}
+{% block body %}
+<nav class="navbar navbar-dark bg-dark px-3"><a class="navbar-brand" href="{{ url_for('admin.dashboard') }}">Platform Admin</a><a class="btn btn-outline-light btn-sm" href="{{ url_for('admin.businesses') }}">Businesses</a></nav>
+<main class="container py-4">
+  {% for category,message in get_flashed_messages(with_categories=true) %}<div class="alert alert-{{ category }}">{{ message }}</div>{% endfor %}
+  <h1 class="h3">Edit {{ business.name }}</h1><div class="card mt-3"><div class="card-body"><form method="post">{{ form.hidden_tag() }}<div class="row g-3">
+    {% for field in [form.name,form.slug,form.phone,form.contact_email,form.whatsapp_number,form.status] %}<div class="col-md-6"><label class="form-label">{{ field.label.text }}</label>{{ field(class="form-control") }}</div>{% endfor %}
+    <div class="col-12"><label class="form-label">Description</label>{{ form.description(class="form-control",rows=3) }}</div><div class="col-12"><label class="form-label">Address</label>{{ form.address(class="form-control",rows=2) }}</div><div class="col-12">{{ form.submit(class="btn btn-dark") }}</div>
+  </div></form></div></div>
+  <h2 class="h5 mt-5">Owner accounts</h2>{% for owner in owners %}<div class="d-flex justify-content-between align-items-center border-bottom py-3"><span>{{ owner.name }} · {{ owner.email }} · {{ 'Active' if owner.active else 'Disabled' }}</span><form method="post" action="{{ url_for('admin.issue_password_reset', user_id=owner.id) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="btn btn-sm btn-outline-dark">Issue reset link</button></form></div>{% else %}<p>No owner account.</p>{% endfor %}
+</main>
+{% endblock %}

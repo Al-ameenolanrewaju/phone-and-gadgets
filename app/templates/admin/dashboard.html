@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Platform Admin{% endblock %}
+{% block body %}
+<nav class="navbar navbar-dark bg-dark px-3"><a class="navbar-brand" href="{{ url_for('admin.dashboard') }}">Platform Admin</a><a class="btn btn-outline-light btn-sm" href="{{ url_for('admin.businesses') }}">Businesses</a></nav>
+<main class="container py-4">
+  {% for category, message in get_flashed_messages(with_categories=true) %}<div class="alert alert-{{ category }}">{{ message }}</div>{% endfor %}
+  <h1 class="h3 mb-4">Platform overview</h1>
+  <div class="row g-3">
+    {% for label, value in [('Businesses',stats.businesses),('Active',stats.active),('Suspended',stats.suspended),('Products',stats.products),('Domains connected',stats.domains_connected),('Domains pending',stats.domains_pending),('Order initiations',stats.initiated_orders),('Confirmed orders',stats.confirmed_orders),('Store visits',stats.visits),('WhatsApp clicks',stats.whatsapp_clicks)] %}
+    <div class="col-6 col-lg-3"><div class="card h-100"><div class="card-body"><div class="text-secondary small">{{ label }}</div><div class="fs-3 fw-bold">{{ value }}</div></div></div></div>
+    {% endfor %}
+  </div>
+  <div class="d-flex gap-2 my-4"><a class="btn btn-dark" href="{{ url_for('admin.businesses') }}">Manage businesses</a><a class="btn btn-outline-dark" href="{{ url_for('admin.domains') }}">Manage domains</a></div>
+  <h2 class="h5 mt-4">Recently created businesses</h2>
+  <div class="table-responsive"><table class="table"><thead><tr><th>Business</th><th>Status</th><th>Domains</th><th></th></tr></thead><tbody>{% for business in businesses[:8] %}<tr><td>{{ business.name }}</td><td>{{ business.status }}</td><td>{% for domain in business.domains %}<span class="badge text-bg-light">{{ domain.host }} · {{ domain.status }}</span>{% else %}Not assigned{% endfor %}</td><td><a href="{{ url_for('admin.edit_business', business_id=business.id) }}">Edit</a></td></tr>{% else %}<tr><td colspan="4">No businesses yet.</td></tr>{% endfor %}</tbody></table></div>
+  <div class="row g-4 mt-4"><div class="col-md-6"><h2 class="h5">Most visited stores</h2><div class="list-group">{% for name,visits in most_visited %}<div class="list-group-item d-flex justify-content-between"><span>{{ name }}</span><strong>{{ visits }}</strong></div>{% else %}<div class="list-group-item text-secondary">No storefront visits yet.</div>{% endfor %}</div></div><div class="col-md-6"><h2 class="h5">Administrative activity</h2><div class="list-group">{% for activity in recent_activity %}<div class="list-group-item"><strong>{{ activity.action }}</strong><small class="d-block text-secondary">{{ activity.details or '' }} · {{ activity.created_at.strftime('%Y-%m-%d %H:%M') }}</small></div>{% else %}<div class="list-group-item text-secondary">No admin activity yet.</div>{% endfor %}</div></div></div>
+</main>
+{% endblock %}

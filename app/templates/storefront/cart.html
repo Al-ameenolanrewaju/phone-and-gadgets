@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Your Bag | {{ business.name }}{% endblock %}
+{% block body_class %}electronics-store{% endblock %}
+{% block body %}
+{% include "storefront/_nav.html" %}
+<main class="cart-page">
+  <header class="collection-page-heading"><span class="eyebrow">Your selection</span><h1>Your bag.</h1><p>Review your devices before sending your order to {{ business.name }}.</p></header>
+  <div id="cart-items" class="cart-items" aria-live="polite"></div>
+  <div class="cart-summary" id="cart-summary" hidden><div><span>Subtotal</span><strong id="cart-subtotal">₦0</strong></div><button class="luxury-button luxury-button-gold" type="button" id="whatsapp-checkout">Continue on WhatsApp ↗</button></div>
+  <div class="cart-empty" id="cart-empty"><h2>Your bag is waiting.</h2><p>You haven't added any devices yet.</p><a class="luxury-button luxury-button-gold" href="{{ url_for('storefront.collection') }}">Explore the catalogue</a></div>
+</main>
+{% include "storefront/_footer.html" %}
+{% endblock %}
+{% block scripts %}<script>window.STORE_WHATSAPP="{{ business.whatsapp_number or '' }}";window.STORE_NAME={{ business.name|tojson }};</script><script src="{{ url_for('static', filename='js/storefront.js') }}?v=4" defer></script>{% endblock %}

@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Order {{ order.reference }}{% endblock %}
+{% block body %}
+<nav class="navbar bg-white border-bottom px-3"><a class="navbar-brand fw-bold" href="{{ url_for('owner.dashboard') }}">Store Dashboard</a><a class="btn btn-sm btn-dark" href="{{ url_for('owner.orders') }}">Orders</a></nav>
+<main class="container py-4">
+  {% for category,message in get_flashed_messages(with_categories=true) %}<div class="alert alert-{{ category }}">{{ message }}</div>{% endfor %}
+  <h1 class="h3">{{ order.reference }}</h1>
+  <div class="row g-4"><div class="col-lg-8"><div class="card"><div class="card-body"><h2 class="h5">Items</h2>{% for item in order.items %}<div class="d-flex justify-content-between border-bottom py-2"><div><strong>{{ item.product_name }}</strong><br><small>{{ item.storage }} / {{ item.colour }} x {{ item.quantity }}</small></div><strong>{{ item.line_total }}</strong></div>{% endfor %}<div class="text-end mt-3"><strong>Total {{ order.total }}</strong></div></div></div></div><div class="col-lg-4"><div class="card"><div class="card-body"><h2 class="h5">Customer</h2><p>{{ order.customer.name }}<br>{{ order.customer.phone }}<br>{{ order.delivery_address }}</p><form method="post"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><label class="form-label">Status</label><select name="status" class="form-select">{% for status in statuses %}<option value="{{ status }}" {% if order.status == status %}selected{% endif %}>{{ status }}</option>{% endfor %}</select><label class="form-label mt-3">Internal notes</label><textarea name="internal_notes" class="form-control" rows="4">{{ order.internal_notes or '' }}</textarea><button class="btn btn-dark mt-3 w-100">Update order</button></form></div></div></div></div>
+</main>
+{% endblock %}

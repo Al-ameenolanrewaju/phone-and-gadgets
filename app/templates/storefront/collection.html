@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}{% if selected_category %}{{ selected_category.name|trim }}{% else %}Collection{% endif %} | {{ business.name }}{% endblock %}
+{% block body_class %}electronics-store{% endblock %}
+{% block body %}
+{% include "storefront/_nav.html" %}
+<main class="collection-page">
+  <header class="collection-page-heading"><span class="eyebrow">The catalogue</span><h1>{% if selected_category %}{{ selected_category.name|trim }}{% else %}Discover every device.{% endif %}</h1><p>Explore the complete collection and add your favourites to your bag.</p></header>
+  <form class="collection-filters" data-collection-filters aria-label="Filter products">
+    <label>Category
+      <select name="category" data-filter-category>
+        <option value="">All categories</option>
+        {% for category in categories %}<option value="{{ category.id }}" data-category-name="{{ category.name|trim }}" data-category-url="{{ url_for('storefront.category', slug=category.slug) }}" {% if selected_category and selected_category.id == category.id %}selected{% endif %}>{{ category.name|trim }}</option>{% endfor %}
+      </select>
+    </label>
+    <label>Storage
+      <select name="storage" data-filter-storage><option value="">All storages</option>{% for storage in storages %}<option value="{{ storage }}" {% if selected_storage|lower == storage|lower %}selected{% endif %}>{{ storage }}</option>{% endfor %}</select>
+    </label>
+    <label>Colour
+      <select name="colour" data-filter-colour><option value="">All colours</option>{% for colour in colours %}<option value="{{ colour }}" {% if selected_colour|lower == colour|lower %}selected{% endif %}>{{ colour }}</option>{% endfor %}</select>
+    </label>
+    <button class="clear-filters" type="reset" data-clear-filters>Clear filters</button>
+  </form>
+  <div class="collection-result-count" data-filter-result-count aria-live="polite">{{ products|length }} devices</div>
+  <div class="product-grid luxury-product-grid collection-product-grid" data-collection-products>
+    {% for product in products %}{% include "storefront/_product_card.html" %}{% endfor %}<div class="catalogue-empty-state" data-filter-empty hidden><h3>No matching devices found.</h3><p>Try another category, storage or colour.</p></div>
+  </div>
+  {% if page_count > 1 %}<nav class="catalogue-pagination" aria-label="Collection pages">{% if page > 1 %}<a href="{{ url_for('storefront.category', slug=selected_category.slug, page=page-1) if selected_category else url_for('storefront.collection', page=page-1) }}">Previous</a>{% endif %}<span>Page {{ page }} of {{ page_count }}</span>{% if page < page_count %}<a href="{{ url_for('storefront.category', slug=selected_category.slug, page=page+1) if selected_category else url_for('storefront.collection', page=page+1) }}">Next</a>{% endif %}</nav>{% endif %}
+</main>
+{% include "storefront/_footer.html" %}
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/storefront.js') }}?v=9" defer></script>{% endblock %}

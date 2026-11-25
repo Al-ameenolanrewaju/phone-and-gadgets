@@ -1,0 +1,38 @@
+{% if settings and settings.announcement %}<div class="luxury-announcement">{{ settings.announcement }}</div>{% endif %}
+<nav class="store-nav luxury-nav" aria-label="Main navigation">
+  <a class="store-brand luxury-brand" href="{{ url_for('storefront.home') }}" aria-label="{{ business.name }} home">
+    <img src="{{ url_for('static', filename='images/store-logo.svg') }}?v=2" alt="Phone & Gadgets">
+  </a>
+  <div class="store-menu luxury-menu" id="store-menu">
+    <a href="{{ url_for('storefront.home') }}" aria-current="page">Home</a>
+    {% if business.whatsapp_number %}<a href="https://wa.me/{{ business.whatsapp_number|replace('+','')|replace(' ','')|replace('-','') }}" target="_blank" rel="noopener noreferrer">Contact</a>{% endif %}
+  </div>
+  <div class="luxury-nav-actions">
+    <button class="wishlist-nav-link" type="button" data-wishlist-open aria-controls="store-wishlist-drawer" aria-expanded="false" aria-label="Open saved products">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"/></svg>
+      <span class="wishlist-count" data-wishlist-count>0</span>
+    </button>
+    <button class="cart-nav-link" type="button" data-cart-open aria-controls="store-cart-drawer" aria-expanded="false" aria-label="Open cart">
+      <svg class="cart-nav-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 3h2l2.2 11.2a2 2 0 0 0 2 1.6h8.9a2 2 0 0 0 2-1.6L22 7H6"/><circle cx="10" cy="20" r="1.2"/><circle cx="18" cy="20" r="1.2"/></svg>
+      <span class="bag-count" data-cart-count>0</span>
+    </button>
+  </div>
+</nav>
+<script>
+  window.STORE_WHATSAPP = {{ (business.whatsapp_number or '')|tojson }};
+  window.STORE_NAME = {{ business.name|tojson }};
+</script>
+<div class="cart-overlay" data-cart-overlay hidden></div>
+<aside class="cart-drawer" id="store-cart-drawer" role="dialog" aria-modal="true" aria-labelledby="cart-drawer-title" aria-hidden="true" hidden>
+  <div class="cart-drawer-header"><div><span class="eyebrow">Your selection</span><h2 id="cart-drawer-title">Your cart <span data-cart-drawer-count>(0)</span></h2></div><button class="cart-close" type="button" data-cart-close aria-label="Close cart">×</button></div>
+  <div class="drawer-tabs" role="tablist" aria-label="Shopping lists"><button type="button" class="drawer-tab" data-drawer-tab="wishlist" role="tab">♡ Saved for later <span data-wishlist-tab-count>(0)</span></button><button type="button" class="drawer-tab is-active" data-drawer-tab="cart" role="tab" aria-selected="true">▱ Your cart <span data-cart-tab-count>(0)</span></button></div>
+  <div class="cart-drawer-body"><div id="cart-items" class="cart-items" aria-live="polite"></div><div class="cart-empty" id="cart-empty"><span class="cart-empty-mark" aria-hidden="true">✳</span><h3>Your cart is waiting.</h3><p>You haven’t added any devices yet. Find something you love.</p><button class="text-link-button" type="button" data-cart-close>Continue shopping</button></div></div>
+  <div class="cart-drawer-footer" id="cart-summary" hidden><div class="cart-subtotal-line"><span>Subtotal</span><strong id="cart-subtotal">₦0</strong></div><p>Delivery and availability will be confirmed when you place your order.</p><div class="drawer-cart-actions"><button type="button" class="drawer-secondary-action" data-cart-clear>Clear cart</button><button class="luxury-button luxury-button-gold cart-checkout-button" type="button" id="whatsapp-checkout">Continue on WhatsApp <span aria-hidden="true">↗</span></button></div></div>
+</aside>
+<div class="wishlist-overlay" data-wishlist-overlay hidden></div>
+<aside class="wishlist-drawer" id="store-wishlist-drawer" data-wishlist-drawer role="dialog" aria-modal="true" aria-labelledby="wishlist-drawer-title" aria-hidden="true" hidden>
+  <div class="wishlist-drawer-header"><div><span class="eyebrow">Your favourites</span><h2 id="wishlist-drawer-title">Saved for later <span data-wishlist-drawer-count>(0)</span></h2></div><button class="cart-close" type="button" data-wishlist-close aria-label="Close saved products">×</button></div>
+  <div class="drawer-tabs" role="tablist" aria-label="Shopping lists"><button type="button" class="drawer-tab is-active" data-drawer-tab="wishlist" role="tab" aria-selected="true">♡ Saved for later <span data-wishlist-tab-count>(0)</span></button><button type="button" class="drawer-tab" data-drawer-tab="cart" role="tab">▱ Your cart <span data-cart-tab-count>(0)</span></button></div>
+  <div class="wishlist-drawer-body"><div class="wishlist-drawer-items" data-wishlist-drawer-items aria-live="polite"></div><div class="wishlist-drawer-empty" data-wishlist-drawer-empty hidden><span class="wishlist-empty-icon">♡</span><h3>Nothing saved yet.</h3><p>Tap a heart on any product to save it here.</p></div></div>
+  <div class="wishlist-drawer-footer drawer-action-row"><button type="button" class="drawer-secondary-action" data-wishlist-clear>Clear all</button><button type="button" class="drawer-primary-action" data-wishlist-move>Move all to cart <span aria-hidden="true">→</span></button><a class="drawer-full-link" href="{{ url_for('storefront.wishlist') }}">Open full wishlist <span aria-hidden="true">→</span></a></div>
+</aside>

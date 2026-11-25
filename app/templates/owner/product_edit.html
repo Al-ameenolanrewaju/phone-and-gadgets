@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Edit {{ product.name }}{% endblock %}
+{% block body %}
+<nav class="navbar bg-white border-bottom px-3"><a class="navbar-brand fw-bold" href="{{ url_for('owner.dashboard') }}">Sulex</a><a class="btn btn-sm btn-dark" href="{{ url_for('owner.products') }}">Products</a></nav>
+<main class="container py-4" style="max-width:900px">
+  {% for category,message in get_flashed_messages(with_categories=true) %}<div class="alert alert-{{ category }}">{{ message }}</div>{% endfor %}
+  <h1 class="h3 mb-4">Edit {{ product.name }}</h1>
+  <div class="card border-0 shadow-sm mb-4"><div class="card-body p-4"><form method="post" enctype="multipart/form-data">{{ form.hidden_tag() }}
+    <div class="row g-3">
+    <div class="col-md-8 mb-3"><label class="form-label">Product name</label>{{ form.name(class="form-control form-control-lg") }}</div>
+    <div class="col-md-4 mb-3"><label class="form-label">URL slug</label>{{ form.slug(class="form-control") }}</div>
+    <div class="col-md-4 mb-3"><label class="form-label">Regular price (₦)</label>{{ form.regular_price(class="form-control form-control-lg") }}</div>
+    <div class="col-md-4 mb-3"><label class="form-label">Sale price (₦)</label>{{ form.discounted_price(class="form-control form-control-lg") }}</div>
+    <div class="col-md-4 mb-3"><label class="form-label">SKU</label>{{ form.sku(class="form-control") }}</div>
+    <div class="col-md-4 mb-3"><label class="form-label" for="{{ form.category_id.id }}">Category</label><select class="form-select" id="{{ form.category_id.id }}" name="{{ form.category_id.name }}"><option value="">Uncategorised</option>{% for category in categories %}<option value="{{ category.id }}" {% if form.category_id.data|string == category.id|string %}selected{% endif %}>{{ category.name }}{% if category.gender %} · {{ category.gender }}{% endif %}</option>{% endfor %}</select></div>
+    <div class="col-md-4 mb-3"><label class="form-label" for="{{ form.gender.id }}">Audience</label><select class="form-select" id="{{ form.gender.id }}" name="{{ form.gender.name }}"><option value="Unisex" {% if (form.gender.data or 'Unisex') == 'Unisex' %}selected{% endif %}>Unisex</option><option value="Men" {% if form.gender.data == 'Men' %}selected{% endif %}>Men</option><option value="Women" {% if form.gender.data == 'Women' %}selected{% endif %}>Women</option></select></div>
+    <div class="col-md-4 mb-3"><label class="form-label" for="{{ form.electronics_type.id }}">Product type</label><select class="form-select" id="{{ form.electronics_type.id }}" name="{{ form.electronics_type.name }}"><option value="Ready-to-wear" {% if (form.electronics_type.data or 'Ready-to-wear') == 'Ready-to-wear' %}selected{% endif %}>Ready-to-wear</option><option value="Custom-made" {% if form.electronics_type.data == 'Custom-made' %}selected{% endif %}>Custom-made</option></select></div>
+
+    </div>
+    <div class="mb-3"><label class="form-label">Description</label>{{ form.description(class="form-control", rows=4) }}</div>
+    <div class="mb-3"><label class="form-label">Replace product photo</label><input type="file" name="images" class="form-control" accept="image/jpeg,image/png,image/webp"></div>
+    <div class="mb-3"><label class="form-label">Available storages</label>{{ form.storages(class="form-control", placeholder="S, M, L, XL or Free Storage") }}<div class="form-text">Separate each storage with a comma.</div></div>
+    <div class="mb-4"><label class="form-label">Available colours</label>{{ form.colours(class="form-control", placeholder="Black, Wine, Navy Blue") }}<div class="form-text">Separate each colour with a comma.</div></div>
+    <div class="mb-4 d-flex flex-wrap gap-4"><label class="form-check">{{ form.is_published(class="form-check-input") }} <span class="form-check-label">Published</span></label></div>
+    {{ form.submit(class="btn btn-dark btn-lg w-100", value="Save changes") }}</form></div></div>
+  <h2 class="h5 mb-2">Product photos</h2><p class="text-muted small mb-3">Choose the correct electronics photo as the cover. The cover is shown consistently on the storefront and in the shopping bag; images are never randomly swapped.</p><div class="row g-3">{% for image in product.images|sort(attribute="sort_order") %}<div class="col-6 col-md-3"><div class="border rounded p-2 h-100"><img class="w-100 mb-2 rounded" style="aspect-ratio:3/4;object-fit:contain;background:#f4f1eb" src="{{ image.url }}" alt="{{ image.alt_text or product.name }}"><div class="small text-truncate mb-2" title="{{ image.original_filename or '' }}">{{ image.original_filename or 'Product photo' }}</div>{% if loop.first %}<span class="badge text-bg-success mb-2">Current cover</span>{% else %}<form method="post" action="{{ url_for('owner.set_product_cover_image', product_id=product.id, image_id=image.id) }}" class="mb-2"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="btn btn-sm btn-outline-dark w-100">Make cover</button></form>{% endif %}<form method="post" action="{{ url_for('owner.delete_product_image', product_id=product.id, image_id=image.id) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="btn btn-sm btn-outline-danger w-100">Remove photo</button></form></div></div>{% else %}<p class="text-muted">No photos uploaded yet.</p>{% endfor %}</div>
+</main>
+{% endblock %}
