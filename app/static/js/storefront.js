@@ -15,7 +15,7 @@
     catch (_) { return []; }
   };
   function productSnapshot(card) {
-    const image = card.querySelector(".product-photo img, .product-detail-main-image img");
+    const image = card.querySelector(".product-photo img, .premium-product-main-image img");
     return { id:String(card.dataset.productId), slug:card.dataset.productSlug || "", name:card.dataset.productName || "Product",
       price:Number(card.dataset.productPrice) || 0, description:card.dataset.productDescription || "",
       category:card.dataset.categoryName || card.dataset.productCategory || "", image:image ? image.currentSrc || image.src : "",
@@ -214,7 +214,7 @@
       saveCart(cart.filter(item => String(item.id) !== id));
       return;
     }
-    const image = card.querySelector(".product-photo img, .product-detail-main-image img");
+    const image = card.querySelector(".product-photo img, .premium-product-main-image img");
     cart.push({
       id,
       name: card.dataset.productName,
