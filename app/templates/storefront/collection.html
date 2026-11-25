@@ -1,10 +1,10 @@
 {% extends "base.html" %}
-{% block title %}{% if selected_category %}{{ selected_category.name|trim }}{% else %}Collection{% endif %} | {{ business.name }}{% endblock %}
+{% block title %}{% if selected_category %}{{ selected_category.name|trim }}{% else %}Devices{% endif %} | {{ business.name }}{% endblock %}
 {% block body_class %}electronics-store{% endblock %}
 {% block body %}
 {% include "storefront/_nav.html" %}
 <main class="collection-page">
-  <header class="collection-page-heading"><span class="eyebrow">The catalogue</span><h1>{% if selected_category %}{{ selected_category.name|trim }}{% else %}Discover every device.{% endif %}</h1><p>Explore the complete collection and add your favourites to your bag.</p></header>
+  <header class="collection-page-heading"><span class="eyebrow">The catalogue</span><h1>{% if selected_category %}{{ selected_category.name|trim }}{% else %}Discover every device.{% endif %}</h1><p>Browse phones, gadgets and accessories, compare options and find what you need.</p></header>
   <form class="collection-filters" data-collection-filters aria-label="Filter products">
     <label>Category
       <select name="category" data-filter-category>
