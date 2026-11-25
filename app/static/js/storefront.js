@@ -353,16 +353,19 @@
     document.addEventListener("change", event => {
       const form = event.target.closest("[data-collection-filters]");
       if (!form) return;
-      if (event.target.matches("[data-filter-category]")) {
-        const option = event.target.selectedOptions[0];
-        navigateTo(option && option.value && option.dataset.categoryUrl ? option.dataset.categoryUrl : "/collection");
-        return;
-      }
-      applyCollectionFilters(form);
+      const categorySelect = form.querySelector("[data-filter-category]");
+      const option = categorySelect && categorySelect.selectedOptions[0];
+      const base = option && option.value && option.dataset.categoryUrl ? option.dataset.categoryUrl : "/collection";
+      const params = new URLSearchParams();
+      ["storage", "colour", "condition", "compatibility"].forEach(name => {
+        const control = form.querySelector('[name="' + name + '"]');
+        if (control && control.value) params.set(name, control.value);
+      });
+      navigateTo(base + (params.size ? "?" + params.toString() : ""));
     });
     document.addEventListener("reset", event => {
       const form = event.target.closest("[data-collection-filters]");
-      if (form) window.requestAnimationFrame(() => applyCollectionFilters(form));
+      if (form) window.requestAnimationFrame(() => navigateTo("/collection"));
     });
     document.addEventListener("submit", event => {
       if (event.target.matches("[data-collection-filters]")) event.preventDefault();
