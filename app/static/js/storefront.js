@@ -157,7 +157,8 @@
       : "";
     const selectedStorage = normalizeFilterValue(storageSelect && storageSelect.value);
     const selectedColour = normalizeFilterValue(colourSelect && colourSelect.value);
-    const selectedCondition = normalizeFilterValue(conditionSelect && conditionSelect.value);\n    const selectedCompatibility = normalizeFilterValue(compatibilitySelect && compatibilitySelect.value);
+    const selectedCondition = normalizeFilterValue(conditionSelect && conditionSelect.value);
+    const selectedCompatibility = normalizeFilterValue(compatibilitySelect && compatibilitySelect.value);
     const cards = Array.from(grid.querySelectorAll("[data-product-card]"));
     let visible = 0;
     cards.forEach(card => {
