@@ -22,7 +22,7 @@
   </form>
   <div class="collection-result-count" data-filter-result-count aria-live="polite">{{ products|length }} devices</div>
   <div class="product-grid luxury-product-grid collection-product-grid" data-collection-products>
-    {% for product in products %}{% include "storefront/_product_card.html" %}{% endfor %}<div class="catalogue-empty-state" data-filter-empty hidden><h3>No matching devices found.</h3><p>Try another category, storage or colour.</p></div>
+    {% for product in products %}{% include "storefront/_product_card.html" %}{% endfor %}<div class="catalogue-empty-state" data-filter-empty hidden><h3>No matching devices found.</h3><p>Try another category, configuration, condition or compatibility option.</p></div>
   </div>
   {% if page_count > 1 %}<nav class="catalogue-pagination" aria-label="Collection pages">{% if page > 1 %}<a href="{{ url_for('storefront.category', slug=selected_category.slug, page=page-1) if selected_category else url_for('storefront.collection', page=page-1) }}">Previous</a>{% endif %}<span>Page {{ page }} of {{ page_count }}</span>{% if page < page_count %}<a href="{{ url_for('storefront.category', slug=selected_category.slug, page=page+1) if selected_category else url_for('storefront.collection', page=page+1) }}">Next</a>{% endif %}</nav>{% endif %}
 </main>
