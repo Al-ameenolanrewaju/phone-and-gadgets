@@ -21,7 +21,7 @@ bp = Blueprint("owner", __name__, url_prefix="/dashboard")
 class CategoryForm(FlaskForm):
     name = StringField("Name", validators=[DataRequired(), Length(max=120)])
     slug = StringField("Slug", validators=[DataRequired(), Length(max=140), Regexp(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")])
-    gender = SelectField("Gender", choices=[("Men", "Men"), ("Women", "Women"), ("Unisex", "Unisex")], default="Unisex", validate_choice=False)
+    gender = SelectField("Device group", choices=[("Phones", "Phones"), ("Computing", "Computing"), ("Accessories", "Accessories"), ("Audio", "Audio"), ("Smart devices", "Smart devices"), ("Other", "Other")], default="Phones", validate_choice=False)
     submit = SubmitField("Save category")
 
 
@@ -39,7 +39,7 @@ class ProductForm(FlaskForm):
         validators=[Optional(), NumberRange(min=0, max=Decimal("9999999999.99"))],
     )
     category_id = StringField("Category")
-    gender = StringField("Gender", default="Unisex", validators=[Optional(), Length(max=20)])
+    gender = StringField("Compatibility", default="Universal", validators=[Optional(), Length(max=20)])
     electronics_type = StringField("Device condition", validators=[Optional(), Length(max=30)])
     sku = StringField("SKU", validators=[Optional(), Length(max=100)])
     description = TextAreaField("Description")
