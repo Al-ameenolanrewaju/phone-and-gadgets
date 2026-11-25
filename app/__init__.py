@@ -138,12 +138,12 @@ def create_app(config_object=None):
             raise RuntimeError("Store bootstrap encountered an existing database record; no partial setup was saved.")
 
     @app.cli.command("bootstrap-phone-gadgets")
-    def bootstrap_phone-gadgets():
+    def bootstrap_phone_gadgets():
         """Create the original Phone & Gadgets store and owner from private environment variables."""
         from sqlalchemy.exc import IntegrityError
 
-        owner_email = os.getenv("SULEX_OWNER_EMAIL", "").strip().lower()
-        owner_password = os.getenv("SULEX_OWNER_PASSWORD", "")
+        owner_email = os.getenv("STORE_OWNER_EMAIL", "").strip().lower()
+        owner_password = os.getenv("STORE_OWNER_PASSWORD", "")
         existing_business = models.Business.query.filter_by(slug="phone-gadgets").first()
         existing_owner = models.User.query.filter_by(email=owner_email).first() if owner_email else None
 
@@ -152,9 +152,9 @@ def create_app(config_object=None):
             print("Phone & Gadgets bootstrap already completed.")
             return
         if not owner_email or not owner_password:
-            raise RuntimeError("Set SULEX_OWNER_EMAIL and SULEX_OWNER_PASSWORD in the service environment.")
+            raise RuntimeError("Set STORE_OWNER_EMAIL and STORE_OWNER_PASSWORD in the service environment.")
         if existing_owner:
-            raise RuntimeError("SULEX_OWNER_EMAIL is already assigned to a different account.")
+            raise RuntimeError("STORE_OWNER_EMAIL is already assigned to a different account.")
         if existing_business and existing_business.status != "ACTIVE":
             raise RuntimeError("The existing Phone & Gadgets store is not active; refusing to change its status.")
 
