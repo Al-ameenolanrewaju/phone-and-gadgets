@@ -4,7 +4,7 @@
 {% block body %}
 {% include "storefront/_nav.html" %}
 <main class="wishlist-page">
-  <header class="collection-page-heading"><span class="eyebrow">Your favourites</span><h1>Saved for later.</h1><p>Pieces you love, ready when you are.</p></header>
+  <header class="collection-page-heading"><span class="eyebrow">Your favourites</span><h1>Saved for later.</h1><p>Your saved devices and accessories, all in one place.</p></header>
   <div class="wishlist-grid product-grid luxury-product-grid" data-wishlist-grid aria-live="polite"></div>
   <section class="wishlist-empty-state" data-wishlist-empty hidden><div class="wishlist-empty-icon">♡</div><h2>Your wishlist is waiting.</h2><p>Save devices you love and find them here whenever you return.</p><a class="luxury-button luxury-button-gold" href="{{ url_for('storefront.collection') }}">Explore the catalogue</a></section>
 </main>
