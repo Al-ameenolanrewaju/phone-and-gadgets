@@ -234,7 +234,7 @@ def products():
             description=form.description.data,
             regular_price=form.regular_price.data,
             discounted_price=form.discounted_price.data,
-            gender=form.gender.data or "Unisex",
+            gender=form.gender.data or "Universal",
             electronics_type=form.electronics_type.data or "New",
             sku=form.sku.data or None,
             is_published=True if "is_published" not in request.form or form.is_published.data else False,
@@ -308,7 +308,7 @@ def edit_product(product_id):
                 return render_template("owner/product_edit.html", form=form, product=product, categories=categories), 200
             category_id = category.id
         product.category_id = category_id
-        product.gender = form.gender.data or "Unisex"
+        product.gender = form.gender.data or "Universal"
         product.electronics_type = form.electronics_type.data or "New"
         product.description = form.description.data
         product.regular_price = form.regular_price.data
