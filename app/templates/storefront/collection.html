@@ -15,6 +15,12 @@
     <label>Storage
       <select name="storage" data-filter-storage><option value="">All configurations</option>{% for storage in storages %}<option value="{{ storage }}" {% if selected_storage|lower == storage|lower %}selected{% endif %}>{{ storage }}</option>{% endfor %}</select>
     </label>
+    <label>Condition
+      <select name="condition" data-filter-condition><option value="">Any condition</option>{% for condition in ["New", "Refurbished", "Used"] %}<option value="{{ condition }}">{{ condition }}</option>{% endfor %}</select>
+    </label>
+    <label>Compatibility
+      <select name="compatibility" data-filter-compatibility><option value="">Any compatibility</option>{% for compatibility in ["Universal", "iOS", "Android", "Windows", "macOS"] %}<option value="{{ compatibility }}">{{ compatibility }}</option>{% endfor %}</select>
+    </label>
     <label>Colour
       <select name="colour" data-filter-colour><option value="">All colours</option>{% for colour in colours %}<option value="{{ colour }}" {% if selected_colour|lower == colour|lower %}selected{% endif %}>{{ colour }}</option>{% endfor %}</select>
     </label>
