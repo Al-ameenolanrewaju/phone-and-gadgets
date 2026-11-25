@@ -1,29 +1,29 @@
 {% extends "base.html" %}
-{% block title %}{{ settings.seo_title if settings and settings.seo_title else business.name ~ ' | Collection' }}{% endblock %}
-{% block meta_description %}{{ settings.seo_description if settings and settings.seo_description else (business.description or 'Explore the latest collection.') }}{% endblock %}
+{% block title %}{{ settings.seo_title if settings and settings.seo_title else business.name ~ ' | Phones & Gadgets' }}{% endblock %}
+{% block meta_description %}{{ settings.seo_description if settings and settings.seo_description else (business.description or 'Explore phones, gadgets and accessories.') }}{% endblock %}
 {% block body_class %}electronics-store{% endblock %}
 {% block body %}
 {% include "storefront/_nav.html" %}
 <main>
   <section class="luxury-hero">
     <div class="luxury-hero-copy">
-      <span class="eyebrow">{{ settings.tagline if settings and settings.tagline else 'The ' ~ business.name ~ ' collection' }}</span>
+      <span class="eyebrow">{{ settings.tagline if settings and settings.tagline else 'Discover technology with ' ~ business.name }}</span>
       <h1>{% if settings and settings.hero_title %}{{ settings.hero_title }}{% else %}Technology for every day,<br><em>and everything ahead.</em>{% endif %}</h1>
-      <p>{{ (settings.about_text if settings and settings.about_text else business.description) or 'Pieces made to be remembered. Discover devices selected with care, check available storages and colours, and speak with us directly on WhatsApp.' }}</p>
+      <p>{{ (settings.about_text if settings and settings.about_text else business.description) or 'Discover carefully selected phones, gadgets and accessories. Compare available configurations and speak with us directly on WhatsApp.' }}</p>
       <div class="hero-actions">
         {% if business.whatsapp_number %}<a class="luxury-button luxury-button-gold" href="https://wa.me/{{ business.whatsapp_number|replace('+','')|replace(' ','')|replace('-','') }}" target="_blank" rel="noopener noreferrer"><span aria-hidden="true">◉</span> Chat on WhatsApp</a>{% endif %}
         <a class="luxury-button luxury-button-outline" href="{{ url_for('storefront.collection') }}">{{ settings.hero_cta if settings and settings.hero_cta else 'Explore Devices' }} <span aria-hidden="true">→</span></a>
       </div>
     </div>
     <div class="luxury-hero-image">
-      {% if business.banner_url %}<img src="{{ business.banner_url }}?v={{ business.updated_at.timestamp()|int }}" alt="{{ business.name }} collection">{% else %}<div class="editorial-brand-panel"><span class="editorial-brand-name">{{ business.name }}</span><span class="editorial-brand-caption">{{ settings.tagline if settings and settings.tagline else 'A considered collection' }}</span></div>{% endif %}
+      {% if business.banner_url %}<img src="{{ business.banner_url }}?v={{ business.updated_at.timestamp()|int }}" alt="{{ business.name }} store">{% else %}<div class="editorial-brand-panel"><span class="editorial-brand-name">{{ business.name }}</span><span class="editorial-brand-caption">{{ settings.tagline if settings and settings.tagline else 'Phones, gadgets and everyday technology' }}</span></div>{% endif %}
     </div>
   </section>
   <section class="luxury-collection" id="featured">
     <div class="luxury-section-head"><div><span class="eyebrow">{{ settings.catalogue_eyebrow if settings and settings.catalogue_eyebrow else 'The catalogue' }}</span><h2>{{ settings.catalogue_title if settings and settings.catalogue_title else 'Devices worth discovering.' }}</h2></div></div>
     <div class="product-grid luxury-product-grid">
       {% for product in featured %}{% include "storefront/_product_card.html" %}{% else %}
-      <div class="catalogue-empty-state"><h3>{{ settings.empty_title if settings and settings.empty_title else 'A new collection is on its way.' }}</h3><p>{{ settings.empty_text if settings and settings.empty_text else 'Our devices will appear here as soon as they are added.' }}</p></div>
+      <div class="catalogue-empty-state"><h3>{{ settings.empty_title if settings and settings.empty_title else 'New devices are on the way.' }}</h3><p>{{ settings.empty_text if settings and settings.empty_text else 'Our devices will appear here as soon as they are added.' }}</p></div>
       {% endfor %}
     </div>
     {% if featured %}<div class="collection-next"><a class="luxury-button luxury-button-outline" href="{{ url_for('storefront.collection') }}">Explore the catalogue <span aria-hidden="true">→</span></a></div>{% endif %}
