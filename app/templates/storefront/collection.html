@@ -13,7 +13,7 @@
       </select>
     </label>
     <label>Storage
-      <select name="storage" data-filter-storage><option value="">All storages</option>{% for storage in storages %}<option value="{{ storage }}" {% if selected_storage|lower == storage|lower %}selected{% endif %}>{{ storage }}</option>{% endfor %}</select>
+      <select name="storage" data-filter-storage><option value="">All configurations</option>{% for storage in storages %}<option value="{{ storage }}" {% if selected_storage|lower == storage|lower %}selected{% endif %}>{{ storage }}</option>{% endfor %}</select>
     </label>
     <label>Colour
       <select name="colour" data-filter-colour><option value="">All colours</option>{% for colour in colours %}<option value="{{ colour }}" {% if selected_colour|lower == colour|lower %}selected{% endif %}>{{ colour }}</option>{% endfor %}</select>

@@ -40,7 +40,7 @@ class ProductForm(FlaskForm):
     )
     category_id = StringField("Category")
     gender = StringField("Gender", default="Unisex", validators=[Optional(), Length(max=20)])
-    electronics_type = StringField("Fashion type", validators=[Optional(), Length(max=30)])
+    electronics_type = StringField("Device condition", validators=[Optional(), Length(max=30)])
     sku = StringField("SKU", validators=[Optional(), Length(max=100)])
     description = TextAreaField("Description")
     storages = StringField("Available storages")
@@ -235,7 +235,7 @@ def products():
             regular_price=form.regular_price.data,
             discounted_price=form.discounted_price.data,
             gender=form.gender.data or "Unisex",
-            electronics_type=form.electronics_type.data or "Ready-to-wear",
+            electronics_type=form.electronics_type.data or "New",
             sku=form.sku.data or None,
             is_published=True if "is_published" not in request.form or form.is_published.data else False,
         )
@@ -309,7 +309,7 @@ def edit_product(product_id):
             category_id = category.id
         product.category_id = category_id
         product.gender = form.gender.data or "Unisex"
-        product.electronics_type = form.electronics_type.data or "Ready-to-wear"
+        product.electronics_type = form.electronics_type.data or "New"
         product.description = form.description.data
         product.regular_price = form.regular_price.data
         product.discounted_price = form.discounted_price.data
