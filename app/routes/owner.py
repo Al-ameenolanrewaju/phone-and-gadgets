@@ -21,7 +21,7 @@ bp = Blueprint("owner", __name__, url_prefix="/dashboard")
 class CategoryForm(FlaskForm):
     name = StringField("Name", validators=[DataRequired(), Length(max=120)])
     slug = StringField("Slug", validators=[DataRequired(), Length(max=140), Regexp(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")])
-    gender = SelectField("Gender", choices=[("Men", "Men"), ("Women", "Women"), ("Unisex", "Unisex")], default="Unisex", validate_choice=False)
+    gender = SelectField("Device group", choices=[("Phones", "Phones"), ("Computing", "Computing"), ("Accessories", "Accessories"), ("Audio", "Audio"), ("Smart devices", "Smart devices"), ("Other", "Other")], default="Phones", validate_choice=False)
     submit = SubmitField("Save category")
 
 
@@ -39,7 +39,7 @@ class ProductForm(FlaskForm):
         validators=[Optional(), NumberRange(min=0, max=Decimal("9999999999.99"))],
     )
     category_id = StringField("Category")
-    gender = StringField("Gender", default="Unisex", validators=[Optional(), Length(max=20)])
+    gender = StringField("Compatibility", default="Universal", validators=[Optional(), Length(max=20)])
     electronics_type = StringField("Device condition", validators=[Optional(), Length(max=30)])
     sku = StringField("SKU", validators=[Optional(), Length(max=100)])
     description = TextAreaField("Description")
@@ -234,7 +234,7 @@ def products():
             description=form.description.data,
             regular_price=form.regular_price.data,
             discounted_price=form.discounted_price.data,
-            gender=form.gender.data or "Unisex",
+            gender=form.gender.data or "Universal",
             electronics_type=form.electronics_type.data or "New",
             sku=form.sku.data or None,
             is_published=True if "is_published" not in request.form or form.is_published.data else False,
@@ -308,7 +308,7 @@ def edit_product(product_id):
                 return render_template("owner/product_edit.html", form=form, product=product, categories=categories), 200
             category_id = category.id
         product.category_id = category_id
-        product.gender = form.gender.data or "Unisex"
+        product.gender = form.gender.data or "Universal"
         product.electronics_type = form.electronics_type.data or "New"
         product.description = form.description.data
         product.regular_price = form.regular_price.data

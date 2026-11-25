@@ -60,7 +60,7 @@ def category_for_slug(business, slug):
     return next((item for item in candidates if " ".join((item.name or "").split()).casefold() == normalized), None)
 
 
-def render_listing(business, products, selected_category=None, selected_storage="", selected_colour="", page=1, page_count=1):
+def render_listing(business, products, selected_category=None, selected_storage="", selected_colour="", selected_condition="", selected_compatibility="", page=1, page_count=1):
     settings, categories = storefront_context(business)
     variant_rows = ProductVariant.query.filter_by(
         business_id=business.id, is_available=True
@@ -71,7 +71,8 @@ def render_listing(business, products, selected_category=None, selected_storage=
         "storefront/collection.html", business=business, products=products,
         categories=categories, selected_category=selected_category, settings=settings,
         storages=storages, colours=colours, selected_storage=selected_storage,
-        selected_colour=selected_colour, page=page, page_count=page_count,
+        selected_colour=selected_colour, selected_condition=selected_condition,
+        selected_compatibility=selected_compatibility, page=page, page_count=page_count,
     )
 
 
@@ -86,20 +87,8 @@ def home():
     )
 
 
-@bp.route("/collection")
-def collection():
-    business = public_business()
-    query = public_products(business)
-    category_id = request.args.get("category", type=int)
-    selected_category = None
-    selected_storage = (request.args.get("storage") or "").strip()
-    selected_colour = (request.args.get("colour") or "").strip()
-    page = max(request.args.get("page", 1, type=int), 1)
-    if category_id:
-        selected_category = Category.query.filter_by(id=category_id, business_id=business.id).first_or_404()
-        same_name_ids = [c.id for c in Category.query.filter_by(business_id=business.id).all()
-                         if " ".join((c.name or "").split()).casefold() == " ".join((selected_category.name or "").split()).casefold()]
-        query = query.filter(Product.category_id.in_(same_name_ids))
+
+def apply_catalogue_filters(query, business, selected_storage="", selected_colour="", selected_condition="", selected_compatibility=""):
     if selected_storage:
         matching = db.session.query(ProductVariant.product_id).filter(
             ProductVariant.business_id == business.id,
@@ -114,9 +103,34 @@ def collection():
             ProductVariant.is_available.is_(True),
         )
         query = query.filter(Product.id.in_(matching))
+    if selected_condition:
+        condition_values = ["new", "ready-to-wear"] if selected_condition.casefold() == "new" else [selected_condition.casefold()]
+        query = query.filter(func.lower(func.trim(Product.electronics_type)).in_(condition_values))
+    if selected_compatibility:
+        compatibility_values = ["universal", "unisex"] if selected_compatibility.casefold() == "universal" else [selected_compatibility.casefold()]
+        query = query.filter(func.lower(func.trim(Product.gender)).in_(compatibility_values))
+    return query
+
+@bp.route("/collection")
+def collection():
+    business = public_business()
+    query = public_products(business)
+    category_id = request.args.get("category", type=int)
+    selected_category = None
+    selected_storage = (request.args.get("storage") or "").strip()
+    selected_colour = (request.args.get("colour") or "").strip()
+    selected_condition = (request.args.get("condition") or "").strip()
+    selected_compatibility = (request.args.get("compatibility") or "").strip()
+    page = max(request.args.get("page", 1, type=int), 1)
+    if category_id:
+        selected_category = Category.query.filter_by(id=category_id, business_id=business.id).first_or_404()
+        same_name_ids = [c.id for c in Category.query.filter_by(business_id=business.id).all()
+                         if " ".join((c.name or "").split()).casefold() == " ".join((selected_category.name or "").split()).casefold()]
+        query = query.filter(Product.category_id.in_(same_name_ids))
+    query = apply_catalogue_filters(query, business, selected_storage, selected_colour, selected_condition, selected_compatibility)
     total = query.count()
-    products = query.order_by(func.random()).offset((page - 1) * PAGE_SIZE).limit(PAGE_SIZE).all()
-    return render_listing(business, products, selected_category, selected_storage, selected_colour, page, max((total + PAGE_SIZE - 1) // PAGE_SIZE, 1))
+    products = query.order_by(Product.created_at.desc(), Product.id.desc()).offset((page - 1) * PAGE_SIZE).limit(PAGE_SIZE).all()
+    return render_listing(business, products, selected_category, selected_storage, selected_colour, selected_condition, selected_compatibility, page, max((total + PAGE_SIZE - 1) // PAGE_SIZE, 1))
 
 
 @bp.route("/category/<string:slug>")
@@ -128,6 +142,11 @@ def category(slug):
     same_name_ids = [c.id for c in Category.query.filter_by(business_id=business.id).all()
                      if " ".join((c.name or "").split()).casefold() == " ".join((selected_category.name or "").split()).casefold()]
     query = public_products(business).filter(Product.category_id.in_(same_name_ids))
+    selected_storage = (request.args.get("storage") or "").strip()
+    selected_colour = (request.args.get("colour") or "").strip()
+    selected_condition = (request.args.get("condition") or "").strip()
+    selected_compatibility = (request.args.get("compatibility") or "").strip()
+    query = apply_catalogue_filters(query, business, selected_storage, selected_colour, selected_condition, selected_compatibility)
     selected_product_id = request.args.get("product", type=int)
     page = max(request.args.get("page", 1, type=int), 1)
     total = query.count()
@@ -135,10 +154,11 @@ def category(slug):
         ordered = query.order_by(case((Product.id == selected_product_id, 0), else_=1),
                                  Product.created_at.desc(), Product.id.desc())
     else:
-        ordered = query.order_by(func.random())
+        ordered = query.order_by(Product.created_at.desc(), Product.id.desc())
     products = ordered.offset((page - 1) * PAGE_SIZE).limit(PAGE_SIZE).all()
-    return render_listing(business, products, selected_category, page=page,
-                          page_count=max((total + PAGE_SIZE - 1) // PAGE_SIZE, 1))
+    return render_listing(business, products, selected_category, selected_storage, selected_colour,
+                          selected_condition, selected_compatibility, page,
+                          max((total + PAGE_SIZE - 1) // PAGE_SIZE, 1))
 
 
 @bp.route("/product/<string:slug>")

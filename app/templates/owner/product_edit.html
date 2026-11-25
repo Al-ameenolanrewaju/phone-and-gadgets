@@ -19,7 +19,7 @@
     </div>
     <div class="mb-3"><label class="form-label">Description</label>{{ form.description(class="form-control", rows=4) }}</div>
     <div class="mb-3"><label class="form-label">Replace product photo</label><input type="file" name="images" class="form-control" accept="image/jpeg,image/png,image/webp"></div>
-    <div class="mb-3"><label class="form-label">Configurations (RAM / storage)</label>{{ form.storages(class="form-control", placeholder="S, M, L, XL or Free Storage") }}<div class="form-text">Add configurations separated by commas, e.g. 8GB RAM / 256GB, 12GB RAM / 512GB.</div></div>
+    <div class="mb-3"><label class="form-label">Configurations (RAM / storage)</label>{{ form.storages(class="form-control", placeholder="128GB, 256GB, 8GB RAM / 256GB") }}<div class="form-text">Add configurations separated by commas, e.g. 8GB RAM / 256GB, 12GB RAM / 512GB.</div></div>
     <div class="mb-4"><label class="form-label">Available colours</label>{{ form.colours(class="form-control", placeholder="Black, Wine, Navy Blue") }}<div class="form-text">Separate each colour with a comma.</div></div>
     <div class="mb-4 d-flex flex-wrap gap-4"><label class="form-check">{{ form.is_published(class="form-check-input") }} <span class="form-check-label">Published</span></label></div>
     {{ form.submit(class="btn btn-dark btn-lg w-100", value="Save changes") }}</form></div></div>

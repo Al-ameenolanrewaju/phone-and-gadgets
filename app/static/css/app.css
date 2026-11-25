@@ -1970,3 +1970,27 @@ body.wishlist-is-open { overflow:hidden; }
 /* Lightweight feedback while a cached storefront page is being fetched. */
 html.page-is-loading::before { content: ""; position: fixed; z-index: 9999; inset: 0 auto auto 0; width: 34%; height: 2px; background: var(--accent); animation: storefront-load-progress .7s ease-in-out infinite alternate; pointer-events: none; }
 @keyframes storefront-load-progress { from { transform: translateX(0); } to { transform: translateX(195%); } }
+
+
+/* Electronics product facts */
+.electronics-store .product-card-meta {
+  display:flex; flex-wrap:wrap; gap:7px; margin:0 0 15px;
+}
+.electronics-store .product-card-meta span {
+  display:inline-flex; align-items:center; min-height:25px; padding:4px 8px;
+  border:1px solid rgba(185,151,96,.28); border-radius:5px;
+  color:#d8c8b3; font:600 10px/1.2 Inter,"Segoe UI",sans-serif;
+}
+.electronics-store .premium-product-specs {
+  display:flex; flex-wrap:wrap; gap:9px 22px; margin:0 0 22px;
+  padding:13px 15px; border:1px solid #e9dfd5; border-radius:9px; background:#fffdfa;
+}
+.electronics-store .premium-product-specs p {
+  margin:0; color:#665b52; font:400 12px/1.5 Inter,"Segoe UI",sans-serif;
+}
+.electronics-store .premium-product-specs strong { color:#32241c; font-weight:650; }
+@media(max-width:600px) {
+  .electronics-store .product-card-meta { gap:5px; }
+  .electronics-store .product-card-meta span { font-size:9px; }
+  .electronics-store .premium-product-specs { gap:8px 14px; padding:11px 12px; }
+}

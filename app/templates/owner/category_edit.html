@@ -8,7 +8,7 @@
 <main class="container py-4 py-lg-5" style="max-width:680px">
   <p class="text-uppercase small fw-semibold text-secondary mb-2" style="letter-spacing:.12em">Category management</p>
   <h1 class="h2 fw-bold mb-1">Edit category</h1>
-  <p class="text-secondary mb-4">Update the name, URL slug or audience for {{ category.name }}.</p>
+  <p class="text-secondary mb-4">Update the category name, URL slug or device group for {{ category.name }}.</p>
   {% for category_type,message in get_flashed_messages(with_categories=true) %}
     <div class="alert alert-{{ category_type }}" role="alert">{{ message }}</div>
   {% endfor %}

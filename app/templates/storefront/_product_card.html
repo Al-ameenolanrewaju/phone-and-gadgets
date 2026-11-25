@@ -1,7 +1,10 @@
 {% set cover_image = product.images|first %}
+{% set device_condition = "New" if (product.electronics_type or "New")|lower in ["ready-to-wear", "new"] else product.electronics_type %}
+{% set device_compatibility = "Universal" if (product.gender or "Universal")|lower in ["unisex", "universal"] else product.gender %}
 <article class="product-card luxury-product-card" data-product-card
   data-product-id="{{ product.id }}" data-product-slug="{{ product.slug }}" data-product-name="{{ product.name }}" data-product-price="{{ product.price }}"
   data-product-description="{{ product.description or '' }}"
+  data-product-condition="{{ device_condition }}" data-product-compatibility="{{ device_compatibility }}"
   data-category-name="{{ product.category.name|trim if product.category else '' }}"
   data-product-storages="{{ product.variants|selectattr('is_available')|map(attribute='storage')|join('|') }}"
   data-product-colours="{{ product.variants|selectattr('is_available')|map(attribute='colour')|join('|') }}">
@@ -15,6 +18,7 @@
   <div class="luxury-product-info">
     <a class="product-card-title-link" href="{{ url_for('storefront.product_detail', slug=product.slug) }}"><h3>{{ product.name }}</h3></a>
     <p class="luxury-price">₦{{ "{:,.0f}".format(product.price) }}</p>
+    <p class="product-card-meta"><span>{{ device_condition }}</span><span>{{ device_compatibility }}</span></p>
     <button class="product-whatsapp-button add-to-cart-button" type="button" data-add-to-cart aria-pressed="false"><span aria-hidden="true">🛒</span> Add to Cart</button>
   </div>
 </article>

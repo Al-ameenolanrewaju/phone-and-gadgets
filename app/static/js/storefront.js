@@ -15,7 +15,7 @@
     catch (_) { return []; }
   };
   function productSnapshot(card) {
-    const image = card.querySelector(".product-photo img, .product-detail-main-image img");
+    const image = card.querySelector(".product-photo img, .premium-product-main-image img");
     return { id:String(card.dataset.productId), slug:card.dataset.productSlug || "", name:card.dataset.productName || "Product",
       price:Number(card.dataset.productPrice) || 0, description:card.dataset.productDescription || "",
       category:card.dataset.categoryName || card.dataset.productCategory || "", image:image ? image.currentSrc || image.src : "",
@@ -150,11 +150,15 @@
     const categorySelect = form.querySelector("[data-filter-category]");
     const storageSelect = form.querySelector("[data-filter-storage]");
     const colourSelect = form.querySelector("[data-filter-colour]");
+    const conditionSelect = form.querySelector("[data-filter-condition]");
+    const compatibilitySelect = form.querySelector("[data-filter-compatibility]");
     const selectedCategory = categorySelect && categorySelect.selectedOptions[0]
       ? normalizeFilterValue(categorySelect.selectedOptions[0].dataset.categoryName)
       : "";
     const selectedStorage = normalizeFilterValue(storageSelect && storageSelect.value);
     const selectedColour = normalizeFilterValue(colourSelect && colourSelect.value);
+    const selectedCondition = normalizeFilterValue(conditionSelect && conditionSelect.value);
+    const selectedCompatibility = normalizeFilterValue(compatibilitySelect && compatibilitySelect.value);
     const cards = Array.from(grid.querySelectorAll("[data-product-card]"));
     let visible = 0;
     cards.forEach(card => {
@@ -163,7 +167,9 @@
       const colours = String(card.dataset.productColours || "").split("|").map(normalizeFilterValue);
       const storageMatch = !selectedStorage || storages.includes(selectedStorage);
       const colourMatch = !selectedColour || colours.includes(selectedColour);
-      const show = categoryMatch && storageMatch && colourMatch;
+      const conditionMatch = !selectedCondition || normalizeFilterValue(card.dataset.productCondition) === selectedCondition;
+      const compatibilityMatch = !selectedCompatibility || normalizeFilterValue(card.dataset.productCompatibility) === selectedCompatibility;
+      const show = categoryMatch && storageMatch && colourMatch && conditionMatch && compatibilityMatch;
       card.hidden = !show;
       if (show) visible += 1;
     });
@@ -210,7 +216,7 @@
       saveCart(cart.filter(item => String(item.id) !== id));
       return;
     }
-    const image = card.querySelector(".product-photo img, .product-detail-main-image img");
+    const image = card.querySelector(".product-photo img, .premium-product-main-image img");
     cart.push({
       id,
       name: card.dataset.productName,
@@ -347,16 +353,19 @@
     document.addEventListener("change", event => {
       const form = event.target.closest("[data-collection-filters]");
       if (!form) return;
-      if (event.target.matches("[data-filter-category]")) {
-        const option = event.target.selectedOptions[0];
-        navigateTo(option && option.value && option.dataset.categoryUrl ? option.dataset.categoryUrl : "/collection");
-        return;
-      }
-      applyCollectionFilters(form);
+      const categorySelect = form.querySelector("[data-filter-category]");
+      const option = categorySelect && categorySelect.selectedOptions[0];
+      const base = option && option.value && option.dataset.categoryUrl ? option.dataset.categoryUrl : "/collection";
+      const params = new URLSearchParams();
+      ["storage", "colour", "condition", "compatibility"].forEach(name => {
+        const control = form.querySelector('[name="' + name + '"]');
+        if (control && control.value) params.set(name, control.value);
+      });
+      navigateTo(base + (params.size ? "?" + params.toString() : ""));
     });
     document.addEventListener("reset", event => {
       const form = event.target.closest("[data-collection-filters]");
-      if (form) window.requestAnimationFrame(() => applyCollectionFilters(form));
+      if (form) window.requestAnimationFrame(() => navigateTo("/collection"));
     });
     document.addEventListener("submit", event => {
       if (event.target.matches("[data-collection-filters]")) event.preventDefault();
@@ -392,7 +401,7 @@
     if (pendingPages.has(key)) return pendingPages.get(key);
     const request = fetch(key, { credentials: "same-origin", headers: { "X-Requested-With": "fetch" } })
       .then(response => { if (!response.ok) throw new Error("Navigation request failed"); return response.text(); })
-      .then(html => { pageCache.set(key, html); if (pageCache.storage > 8) pageCache.delete(pageCache.keys().next().value); return html; })
+      .then(html => { pageCache.set(key, html); if (pageCache.size > 8) pageCache.delete(pageCache.keys().next().value); return html; })
       .finally(() => pendingPages.delete(key));
     pendingPages.set(key, request);
     return request;

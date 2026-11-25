@@ -11,4 +11,4 @@
 </main>
 {% include "storefront/_footer.html" %}
 {% endblock %}
-{% block scripts %}<script>window.STORE_WHATSAPP="{{ business.whatsapp_number or '' }}";window.STORE_NAME={{ business.name|tojson }};</script><script src="{{ url_for('static', filename='js/storefront.js') }}?v=4" defer></script>{% endblock %}
+{% block scripts %}<script>window.STORE_WHATSAPP="{{ business.whatsapp_number or '' }}";window.STORE_NAME={{ business.name|tojson }};</script><script src="{{ url_for('static', filename='js/storefront.js') }}?v=11" defer></script>{% endblock %}
