@@ -52,6 +52,8 @@ def create_app(config_object=None):
     login_manager.login_view = "auth.login"
 
     from . import models
+    from .demo_catalogue import register_demo_catalogue_command
+    register_demo_catalogue_command(app)
 
     @app.cli.command("bootstrap-store")
     def bootstrap_store():
