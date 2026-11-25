@@ -3,6 +3,8 @@
 {% block meta_description %}{{ product.description or product.name }}{% endblock %}
 {% block body_class %}electronics-store{% endblock %}
 {% block body %}
+{% set device_condition = "New" if (product.electronics_type or "New")|lower in ["ready-to-wear", "new"] else product.electronics_type %}
+{% set device_compatibility = "Universal" if (product.gender or "Universal")|lower in ["unisex", "universal"] else product.gender %}
 {% include "storefront/_nav.html" %}
 <main class="product-detail-page premium-product-page">
   <section class="premium-product-layout" data-product-card
@@ -11,7 +13,7 @@
     data-product-name="{{ product.name }}"
     data-product-price="{{ product.price }}"
     data-product-description="{{ product.description or '' }}"
-    data-product-condition="{{ product.electronics_type or 'New' }}" data-product-compatibility="{{ product.gender or 'Universal' }}"
+    data-product-condition="{{ device_condition }}" data-product-compatibility="{{ device_compatibility }}"
     data-product-category="{{ product.category.name if product.category else '' }}"
     data-product-storages="{{ variants|map(attribute='storage')|unique|join('|') }}"
     data-product-colours="{{ variants|map(attribute='colour')|unique|join('|') }}">
@@ -42,7 +44,7 @@
       {% if product.category %}<p class="premium-product-category">{{ product.category.name|trim }}</p>{% endif %}
       <h1>{{ product.name }}</h1>
       <p class="premium-product-price">₦{{ "{:,.0f}".format(product.price) }}</p>
-      <div class="premium-product-specs" aria-label="Product details"><p><strong>Condition:</strong> {{ product.electronics_type or "New" }}</p><p><strong>Compatibility:</strong> {{ product.gender or "Universal" }}</p></div>
+      <div class="premium-product-specs" aria-label="Product details"><p><strong>Condition:</strong> {{ device_condition }}</p><p><strong>Compatibility:</strong> {{ device_compatibility }}</p></div>
 
       {% if product.description %}
         <div class="premium-product-description">{{ product.description }}</div>
