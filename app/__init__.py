@@ -7,6 +7,7 @@ from flask_login import LoginManager
 from flask_wtf import CSRFProtect
 from flask_wtf.csrf import CSRFError
 from werkzeug.utils import safe_join
+from sqlalchemy import event
 from sqlalchemy.orm import undefer
 
 
@@ -47,6 +48,19 @@ def create_app(config_object=None):
             raise RuntimeError("Configure DATABASE_URL with a persistent PostgreSQL database for production.")
 
     db.init_app(app)
+    if database_url.startswith(("postgresql://", "postgresql+psycopg://")):
+        # Enforce the tenant schema on every physical DB connection, including
+        # pooled connections. Never allow this app to fall back to public.
+        engine = db.engine
+
+        @event.listens_for(engine, "connect")
+        def set_gadgets_search_path(dbapi_connection, connection_record):
+            cursor = dbapi_connection.cursor()
+            try:
+                cursor.execute("SET search_path TO gadgets")
+            finally:
+                cursor.close()
+
     migrate.init_app(app, db)
     login_manager.init_app(app)
     csrf.init_app(app)
@@ -313,8 +327,14 @@ def create_app(config_object=None):
 
     @app.get("/health")
     def health():
-        db.session.execute(db.text("SELECT 1"))
-        return {"status": "ok", "database": "ok"}
+        result = db.session.execute(
+            db.text("SELECT current_schema(), current_schemas(true)")
+        ).one()
+        schema, schemas = result[0], result[1]
+        if schema != "gadgets":
+            app.logger.error("Database schema isolation failed: current_schema=%s schemas=%s", schema, schemas)
+            return {"status": "error", "database": "connected", "schema": schema, "schemas": schemas}, 503
+        return {"status": "ok", "database": "ok", "schema": schema, "schemas": schemas}
 
     @app.context_processor
     def inject_common():
