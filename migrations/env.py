@@ -98,6 +98,8 @@ def run_migrations_online():
     connectable = get_engine()
 
     with connectable.connect() as connection:
+        # Keep all unqualified migration DDL inside this application's schema.
+        connection.exec_driver_sql("SET search_path TO gadgets")
         context.configure(
             connection=connection,
             target_metadata=get_metadata(),
