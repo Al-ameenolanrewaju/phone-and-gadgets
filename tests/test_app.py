@@ -1110,7 +1110,9 @@ def test_owner_dashboard_shows_only_core_catalogue_tools(app, client):
     assert response.status_code == 200
     for label in [b"Products", b"Categories", b"Store information", b"Change password", b"Recently updated products"]:
         assert label in response.data
-    for removed_label in [b"Recent orders", b"Customers", b"Photo library", b"Domain management"]:
+    # "Customers" appears in the explanatory sentence about who can browse the shop;
+    # assert the removed dashboard navigation labels are absent as standalone items.
+    for removed_label in [b">Recent orders<", b">Customers<", b">Photo library<", b">Domain management<"]:
         assert removed_label not in response.data
 
 
