@@ -28,7 +28,7 @@ def create_app(config_object=None):
     app.config.update(
         SECRET_KEY=os.getenv("SECRET_KEY"),
         SQLALCHEMY_DATABASE_URI=database_url,
-        SQLALCHEMY_ENGINE_OPTIONS=({"connect_args": {"options": "-csearch_path=gadgets"}} if database_url.startswith(("postgresql://", "postgresql+psycopg://")) else {}),
+        SQLALCHEMY_ENGINE_OPTIONS=({"connect_args": {"options": "-csearch_path=gadgets"}, "execution_options": {"schema_translate_map": {None: "gadgets"}}} if database_url.startswith(("postgresql://", "postgresql+psycopg://")) else {}),
         SQLALCHEMY_TRACK_MODIFICATIONS=False,
         WTF_CSRF_ENABLED=True,
         WTF_CSRF_TIME_LIMIT=86400,
