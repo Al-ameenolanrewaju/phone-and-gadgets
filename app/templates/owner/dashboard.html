@@ -2,141 +2,100 @@
 {% block title %}Dashboard · {{ business.name }}{% endblock %}
 {% block body %}
 <style>
-  .owner-dashboard{--od-ink:#211b16;--od-muted:#81776e;--od-line:#eae4dc;--od-paper:#fbf9f6;min-height:100vh;background:var(--od-paper);color:var(--od-ink)}
-  .od-topbar{height:76px;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(18px,4vw,54px);background:#fff;border-bottom:1px solid var(--od-line)}
-  .od-brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit;font-weight:700;letter-spacing:-.03em}
-  .od-brand-mark{display:grid;place-items:center;width:38px;height:38px;border-radius:12px;background:#382417;color:#fff;font-family:Georgia,serif;font-size:20px}
-  .od-top-actions{display:flex;align-items:center;gap:12px}
-  .od-top-actions a,.od-top-actions button{font-size:12px}
-  .od-layout{display:grid;grid-template-columns:230px minmax(0,1fr);max-width:1600px;margin:auto;min-height:calc(100vh - 76px)}
-  .od-sidebar{padding:30px 18px;border-right:1px solid var(--od-line);background:#fff}
-  .od-side-label{margin:0 12px 12px;color:#a49a90;font-size:9px;font-weight:700;letter-spacing:.16em;text-transform:uppercase}
-  .od-side-link{display:flex;align-items:center;gap:12px;margin:4px 0;padding:12px;border-radius:10px;color:#665d54;text-decoration:none;font-size:12px;font-weight:550;transition:.18s}
-  .od-side-link:hover,.od-side-link.active{background:#f4eee7;color:#382417}
-  .od-side-icon{display:grid;place-items:center;width:25px;height:25px;border:1px solid #e9e1d8;border-radius:8px;font-size:12px}
-  .od-side-link.active .od-side-icon{border-color:#d9c4ae;background:#fff}
-  .od-side-bottom{margin-top:34px;padding-top:20px;border-top:1px solid var(--od-line)}
+  .owner-dashboard{--ink:#211b16;--muted:#81776e;--line:#eae4dc;--paper:#fbf9f6;min-height:100vh;background:var(--paper);color:var(--ink)}
+  .od-topbar{height:72px;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(18px,4vw,54px);background:#fff;border-bottom:1px solid var(--line)}
+  .od-brand{display:flex;align-items:center;gap:12px;color:inherit;text-decoration:none;font-weight:700}
+  .od-mark{display:grid;place-items:center;width:38px;height:38px;border-radius:12px;background:#382417;color:#fff;font:20px Georgia,serif}
+  .od-actions-top{display:flex;align-items:center;gap:10px}
+  .od-layout{display:grid;grid-template-columns:220px minmax(0,1fr);max-width:1500px;margin:auto;min-height:calc(100vh - 72px)}
+  .od-sidebar{padding:28px 16px;background:#fff;border-right:1px solid var(--line)}
+  .od-label{margin:0 12px 12px;color:#a49a90;font-size:9px;font-weight:700;letter-spacing:.16em;text-transform:uppercase}
+  .od-link{display:flex;align-items:center;gap:12px;margin:4px 0;padding:12px;border-radius:10px;color:#665d54;text-decoration:none;font-size:12px}
+  .od-link:hover,.od-link.active{background:#f4eee7;color:#382417}
+  .od-icon{display:grid;place-items:center;width:27px;height:27px;border:1px solid #e9e1d8;border-radius:8px}
   .od-main{min-width:0;padding:clamp(22px,4vw,48px)}
-  .od-welcome{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;margin-bottom:28px}
+  .od-welcome{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;margin-bottom:26px}
   .od-eyebrow{margin:0 0 8px;color:#9a8067;font-size:9px;font-weight:700;letter-spacing:.17em;text-transform:uppercase}
-  .od-welcome h1{margin:0;font-family:Georgia,serif;font-size:clamp(29px,4vw,42px);font-weight:400;letter-spacing:-.04em}
-  .od-welcome p:last-child{margin:7px 0 0;color:var(--od-muted);font-size:12px}
-  .od-btn-primary{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:43px;padding:0 17px;border:1px solid #382417;border-radius:9px;background:#382417;color:#fff;text-decoration:none;font-size:11px;font-weight:650;transition:.18s}
-  .od-btn-primary:hover{background:#533923;color:#fff;transform:translateY(-1px)}
-  .od-btn-light{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:0 14px;border:1px solid var(--od-line);border-radius:9px;background:#fff;color:#44372c;text-decoration:none;font-size:11px;font-weight:600}
-  .od-btn-light:hover{border-color:#c9b49f;background:#faf6f1;color:#382417}
-  .od-banner{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:25px;padding:19px 21px;border:1px solid #e8ded2;border-radius:14px;background:linear-gradient(110deg,#f1e8dd,#faf6f0)}
-  .od-banner strong{display:block;margin-bottom:4px;font-family:Georgia,serif;font-size:19px;font-weight:400}
+  .od-welcome h1{margin:0;font:400 clamp(29px,4vw,42px)/1.1 Georgia,serif;letter-spacing:-.04em}
+  .od-welcome p:last-child{margin:7px 0 0;color:var(--muted);font-size:12px}
+  .od-btn{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:0 16px;border:1px solid #382417;border-radius:9px;background:#382417;color:#fff;text-decoration:none;font-size:11px;font-weight:650}
+  .od-btn:hover{background:#533923;color:#fff}
+  .od-btn-light{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:0 14px;border:1px solid var(--line);border-radius:9px;background:#fff;color:#44372c;text-decoration:none;font-size:11px;font-weight:600}
+  .od-banner{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:24px;padding:19px 21px;border:1px solid #e8ded2;border-radius:14px;background:linear-gradient(110deg,#f1e8dd,#faf6f0)}
+  .od-banner strong{display:block;margin-bottom:4px;font:400 19px Georgia,serif}
   .od-banner span{color:#776b60;font-size:11px}
-  .od-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;margin-bottom:28px}
-  .od-stat{position:relative;overflow:hidden;padding:18px;border:1px solid var(--od-line);border-radius:13px;background:#fff}
-  .od-stat:after{position:absolute;right:-18px;bottom:-28px;width:82px;height:82px;border:1px solid #f0e9e1;border-radius:50%;content:""}
-  .od-stat-top{display:flex;align-items:center;justify-content:space-between;color:#83786e;font-size:10px}
-  .od-stat-icon{display:grid;place-items:center;width:28px;height:28px;border-radius:9px;background:#f6f1eb;color:#72553b;font-size:13px}
-  .od-stat-value{margin-top:13px;font-family:Georgia,serif;font-size:31px;line-height:1}
-  .od-stat-note{margin-top:7px;color:#9b9187;font-size:9px}
-  .od-section-heading{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:0 0 13px}
-  .od-section-heading h2{margin:0;font-family:Georgia,serif;font-size:22px;font-weight:400}
-  .od-section-heading a{color:#76583c;font-size:10px;font-weight:650;text-decoration:none}
-  .od-actions{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:30px}
-  .od-action{display:flex;align-items:center;gap:12px;min-width:0;padding:15px;border:1px solid var(--od-line);border-radius:12px;background:#fff;color:inherit;text-decoration:none;transition:.18s}
-  .od-action:hover{transform:translateY(-2px);border-color:#d3c0ad;box-shadow:0 8px 22px rgba(57,38,22,.05);color:inherit}
-  .od-action-icon{flex:0 0 36px;display:grid;place-items:center;width:36px;height:36px;border-radius:10px;background:#f5eee6;color:#65472e;font-size:16px}
-  .od-action strong{display:block;font-size:11px}
-  .od-action small{display:block;margin-top:3px;color:#91867c;font-size:9px}
-  .od-panels{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(280px,.8fr);gap:16px;align-items:start}
-  .od-panel{min-width:0;border:1px solid var(--od-line);border-radius:14px;background:#fff}
+  .od-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px;margin-bottom:28px}
+  .od-stat{padding:18px;border:1px solid var(--line);border-radius:13px;background:#fff}
+  .od-stat-label{color:#83786e;font-size:10px}
+  .od-stat-value{margin-top:12px;font:31px Georgia,serif}
+  .od-stat-note{margin-top:5px;color:#9b9187;font-size:9px}
+  .od-section-title{margin:0 0 13px;font:400 22px Georgia,serif}
+  .od-quick{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:28px}
+  .od-quick a{display:flex;align-items:center;gap:12px;padding:15px;border:1px solid var(--line);border-radius:12px;background:#fff;color:inherit;text-decoration:none}
+  .od-quick a:hover{border-color:#d3c0ad}
+  .od-quick-icon{display:grid;place-items:center;flex:0 0 36px;width:36px;height:36px;border-radius:10px;background:#f5eee6;color:#65472e;font-size:16px}
+  .od-quick strong{display:block;font-size:11px}.od-quick small{display:block;margin-top:3px;color:#91867c;font-size:9px}
+  .od-panel{border:1px solid var(--line);border-radius:14px;background:#fff}
   .od-panel-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:18px 19px;border-bottom:1px solid #f0ebe5}
-  .od-panel-head h3{margin:0;font-family:Georgia,serif;font-size:18px;font-weight:400}
-  .od-panel-head a{color:#76583c;font-size:10px;text-decoration:none}
-  .od-table-wrap{overflow-x:auto}
-  .od-table{width:100%;margin:0;border-collapse:collapse;white-space:nowrap}
-  .od-table th{padding:12px 16px;color:#9b9187;font-size:9px;font-weight:650;letter-spacing:.08em;text-align:left;text-transform:uppercase}
-  .od-table td{padding:13px 16px;border-top:1px solid #f3eee8;font-size:10px;vertical-align:middle}
-  .od-table td:first-child{font-weight:650;color:#403329}
-  .od-muted{color:#8e847a}
-  .od-status{display:inline-flex;padding:5px 8px;border-radius:20px;background:#f4f0ea;color:#6b5744;font-size:9px}
-  .od-open{color:#76583c;font-weight:650;text-decoration:none}
-  .od-empty{padding:28px 18px;color:#93897f;font-size:11px;text-align:center}
-  .od-product-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px;border-top:1px solid #f3eee8}
-  .od-product-row:first-of-type{border-top:0}
-  .od-product-name{min-width:0}
-  .od-product-name strong{display:block;overflow:hidden;color:#403329;font-size:11px;text-overflow:ellipsis;white-space:nowrap}
-  .od-product-name span{display:block;margin-top:4px;color:#958a80;font-size:9px}
-  .od-product-price{white-space:nowrap;font-size:10px;font-weight:700}
+  .od-panel-head h2{margin:0;font:400 18px Georgia,serif}.od-panel-head a{color:#76583c;font-size:10px;text-decoration:none}
+  .od-product{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px;border-top:1px solid #f3eee8}
+  .od-product:first-of-type{border-top:0}.od-product strong{display:block;font-size:11px}.od-product small{display:block;margin-top:4px;color:#958a80;font-size:9px}
+  .od-price{white-space:nowrap;font-size:10px;font-weight:700}.od-empty{padding:28px 18px;color:#93897f;font-size:11px;text-align:center}
   .od-mobile-nav{display:none}
-  @media(max-width:1100px){.od-layout{grid-template-columns:190px minmax(0,1fr)}.od-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.od-actions{grid-template-columns:repeat(2,minmax(0,1fr))}.od-panels{grid-template-columns:1fr}}
-  @media(max-width:700px){.od-topbar{height:64px;padding:0 16px}.od-layout{display:block;min-height:calc(100vh - 64px)}.od-sidebar{display:none}.od-main{padding:24px 16px 36px}.od-welcome{align-items:flex-start;flex-direction:column;margin-bottom:20px}.od-welcome .od-btn-primary{width:100%}.od-banner{align-items:flex-start;flex-direction:column;padding:17px}.od-banner .od-btn-light{width:100%}.od-stats{gap:9px}.od-stat{padding:14px}.od-stat-value{font-size:27px}.od-stat-top{font-size:9px}.od-actions{gap:9px}.od-action{align-items:flex-start;padding:12px;gap:9px}.od-action-icon{flex-basis:31px;width:31px;height:31px}.od-action strong{font-size:10px}.od-action small{font-size:8px}.od-mobile-nav{display:flex;gap:8px;overflow-x:auto;margin:0 0 20px;padding:2px 0 8px}.od-mobile-nav a{flex:0 0 auto;padding:9px 12px;border:1px solid var(--od-line);border-radius:30px;background:#fff;color:#55483d;font-size:10px;text-decoration:none}.od-mobile-nav a.active{border-color:#382417;background:#382417;color:#fff}.od-panel-head{padding:15px}.od-table th,.od-table td{padding:12px}.od-section-heading h2{font-size:20px}}
-  @media(max-width:370px){.od-stats{grid-template-columns:1fr 1fr}.od-stat-value{font-size:24px}.od-actions{grid-template-columns:1fr 1fr}}
+  @media(max-width:900px){.od-layout{grid-template-columns:180px minmax(0,1fr)}.od-quick{grid-template-columns:1fr 1fr}}
+  @media(max-width:700px){.od-topbar{height:64px;padding:0 16px}.od-layout{display:block;min-height:calc(100vh - 64px)}.od-sidebar{display:none}.od-main{padding:22px 16px 34px}.od-mobile-nav{display:flex;gap:8px;overflow-x:auto;margin:0 0 20px;padding:2px 0 8px}.od-mobile-nav a{flex:0 0 auto;padding:9px 12px;border:1px solid var(--line);border-radius:30px;background:#fff;color:#55483d;font-size:10px;text-decoration:none}.od-mobile-nav a.active{border-color:#382417;background:#382417;color:#fff}.od-welcome{align-items:flex-start;flex-direction:column}.od-welcome .od-btn{width:100%}.od-banner{align-items:flex-start;flex-direction:column;padding:17px}.od-stats{gap:9px}.od-stat{padding:14px}.od-stat-value{font-size:27px}.od-quick{gap:9px}.od-quick a{align-items:flex-start;padding:12px;gap:9px}.od-quick-icon{flex-basis:31px;width:31px;height:31px}.od-panel-head{padding:15px}}
+  @media(max-width:370px){.od-stats{grid-template-columns:1fr 1fr}.od-quick{grid-template-columns:1fr 1fr}}
 </style>
 <div class="owner-dashboard">
   <header class="od-topbar">
-    <a class="od-brand" href="{{ url_for('owner.dashboard') }}"><span class="od-brand-mark">PG</span><span>{{ business.name }}</span></a>
-    <div class="od-top-actions">
+    <a class="od-brand" href="{{ url_for('owner.dashboard') }}"><span class="od-mark">PG</span><span>{{ business.name }}</span></a>
+    <div class="od-actions-top">
       <a class="od-btn-light d-none d-sm-inline-flex" href="{{ url_for('storefront.home') }}" target="_blank" rel="noopener">View shop ↗</a>
       <form method="post" action="{{ url_for('auth.logout') }}" class="m-0"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="od-btn-light" type="submit">Sign out</button></form>
     </div>
   </header>
   <div class="od-layout">
     <aside class="od-sidebar">
-      <p class="od-side-label">Workspace</p>
-      <a class="od-side-link active" href="{{ url_for('owner.dashboard') }}"><span class="od-side-icon">⌂</span>Overview</a>
-      <a class="od-side-link" href="{{ url_for('owner.products') }}"><span class="od-side-icon">▦</span>Products</a>
-      <a class="od-side-link" href="{{ url_for('owner.categories') }}"><span class="od-side-icon">▤</span>Categories</a>
-      <a class="od-side-link" href="{{ url_for('owner.orders') }}"><span class="od-side-icon">▣</span>Orders{% if stats.open_orders %}<span class="badge rounded-pill text-bg-dark ms-auto">{{ stats.open_orders }}</span>{% endif %}</a>
-      <a class="od-side-link" href="{{ url_for('owner.customers') }}"><span class="od-side-icon">♙</span>Customers</a>
-      <p class="od-side-label mt-4">Store</p>
-      <a class="od-side-link" href="{{ url_for('owner.product_image_library') }}"><span class="od-side-icon">▧</span>Photo library</a>
-      <a class="od-side-link" href="{{ url_for('owner.domain_status') }}"><span class="od-side-icon">⌘</span>Domain</a>
-      <a class="od-side-link" href="{{ url_for('owner.settings') }}"><span class="od-side-icon">⚙</span>Store settings</a>
-      <div class="od-side-bottom"><a class="od-side-link" href="{{ url_for('owner.change_password') }}"><span class="od-side-icon">⌑</span>Password & security</a></div>
+      <p class="od-label">Manage your catalogue</p>
+      <a class="od-link active" href="{{ url_for('owner.dashboard') }}"><span class="od-icon">⌂</span>Overview</a>
+      <a class="od-link" href="{{ url_for('owner.products') }}"><span class="od-icon">▦</span>Products</a>
+      <a class="od-link" href="{{ url_for('owner.categories') }}"><span class="od-icon">▤</span>Categories</a>
+      <a class="od-link" href="{{ url_for('owner.settings') }}"><span class="od-icon">⚙</span>Store information</a>
+      <a class="od-link" href="{{ url_for('owner.change_password') }}"><span class="od-icon">⌑</span>Change password</a>
     </aside>
     <main class="od-main">
       <nav class="od-mobile-nav" aria-label="Dashboard navigation">
         <a class="active" href="{{ url_for('owner.dashboard') }}">Overview</a>
         <a href="{{ url_for('owner.products') }}">Products</a>
         <a href="{{ url_for('owner.categories') }}">Categories</a>
-        <a href="{{ url_for('owner.orders') }}">Orders</a>
-        <a href="{{ url_for('owner.customers') }}">Customers</a>
-        <a href="{{ url_for('owner.settings') }}">Settings</a>
+        <a href="{{ url_for('owner.settings') }}">Store info</a>
       </nav>
       <section class="od-welcome">
-        <div><p class="od-eyebrow">Your store at a glance</p><h1>Good to see you, {{ current_user.name }}.</h1><p>Here’s what’s happening with {{ business.name }}.</p></div>
-        <a class="od-btn-primary" href="{{ url_for('owner.products') }}">＋ Add a product</a>
+        <div><p class="od-eyebrow">Catalogue overview</p><h1>Welcome back, {{ current_user.name }}.</h1><p>Manage the products and information customers see in your shop.</p></div>
+        <a class="od-btn" href="{{ url_for('owner.products') }}">＋ Add product</a>
       </section>
       <section class="od-banner">
-        <div><strong>Your catalogue is ready for customers.</strong><span>Share your shop and let customers browse your collection and place orders through WhatsApp.</span></div>
-        <a class="od-btn-light" href="{{ url_for('storefront.home') }}" target="_blank" rel="noopener">Preview public shop ↗</a>
+        <div><strong>Your shop is ready to share.</strong><span>Customers can browse your products and contact you through WhatsApp.</span></div>
+        <a class="od-btn-light" href="{{ url_for('storefront.home') }}" target="_blank" rel="noopener">Preview shop ↗</a>
       </section>
-      <section class="od-stats" aria-label="Store statistics">
-        {% for label,value,icon,note in [('Total products',stats.products,'▦','In your catalogue'),('Published',stats.published,'✓','Visible to customers'),('Categories',stats.categories,'▤','Ways to organise products'),('Orders',stats.orders,'▣','Orders received'),('Open orders',stats.open_orders,'◷','Need your attention'),('Customers',stats.customers,'♙','Customer records'),('Out of stock',stats.out_of_stock,'!', 'Unavailable variants')] %}
-        <article class="od-stat"><div class="od-stat-top"><span>{{ label }}</span><span class="od-stat-icon">{{ icon }}</span></div><div class="od-stat-value">{{ value }}</div><div class="od-stat-note">{{ note }}</div></article>
-        {% endfor %}
+      <section class="od-stats" aria-label="Catalogue summary">
+        <article class="od-stat"><div class="od-stat-label">Total products</div><div class="od-stat-value">{{ stats.products }}</div><div class="od-stat-note">Products saved in your catalogue</div></article>
+        <article class="od-stat"><div class="od-stat-label">Published products</div><div class="od-stat-value">{{ stats.published }}</div><div class="od-stat-note">Visible to customers</div></article>
+        <article class="od-stat"><div class="od-stat-label">Categories</div><div class="od-stat-value">{{ stats.categories }}</div><div class="od-stat-note">Keep products organised</div></article>
       </section>
       <section>
-        <div class="od-section-heading"><h2>Quick actions</h2></div>
-        <div class="od-actions">
-          <a class="od-action" href="{{ url_for('owner.products') }}"><span class="od-action-icon">＋</span><span><strong>Add / manage products</strong><small>Update your catalogue</small></span></a>
-          <a class="od-action" href="{{ url_for('owner.categories') }}"><span class="od-action-icon">▤</span><span><strong>Manage categories</strong><small>Create and organise categories</small></span></a>
-          <a class="od-action" href="{{ url_for('owner.orders') }}"><span class="od-action-icon">▣</span><span><strong>View orders</strong><small>{% if stats.open_orders %}{{ stats.open_orders }} awaiting attention{% else %}Track customer orders{% endif %}</small></span></a>
-          <a class="od-action" href="{{ url_for('owner.settings') }}"><span class="od-action-icon">⚙</span><span><strong>Edit storefront</strong><small>Manage your shop details</small></span></a>
+        <h2 class="od-section-title">Quick actions</h2>
+        <div class="od-quick">
+          <a href="{{ url_for('owner.products') }}"><span class="od-quick-icon">＋</span><span><strong>Manage products</strong><small>Add photos, prices and stock options</small></span></a>
+          <a href="{{ url_for('owner.categories') }}"><span class="od-quick-icon">▤</span><span><strong>Manage categories</strong><small>Organise your catalogue</small></span></a>
+          <a href="{{ url_for('owner.settings') }}"><span class="od-quick-icon">⚙</span><span><strong>Store information</strong><small>Update contact and WhatsApp details</small></span></a>
         </div>
       </section>
-      <section class="od-panels">
-        <div class="od-panel">
-          <div class="od-panel-head"><h3>Recent orders</h3><a href="{{ url_for('owner.orders') }}">View all orders →</a></div>
-          {% if recent_orders %}
-          <div class="od-table-wrap"><table class="od-table"><thead><tr><th>Order</th><th>Customer</th><th>Status</th><th>Total</th><th></th></tr></thead><tbody>
-            {% for order in recent_orders %}<tr><td>{{ order.reference }}</td><td>{{ order.customer.name }}</td><td><span class="od-status">{{ order.status|replace('_',' ')|title }}</span></td><td>₦{{ '{:,.2f}'.format(order.total|float) }}</td><td><a class="od-open" href="{{ url_for('owner.order_detail', order_id=order.id) }}">Open</a></td></tr>{% endfor %}
-          </tbody></table></div>
-          {% else %}<div class="od-empty">No orders yet. New customer orders will appear here.</div>{% endif %}
-        </div>
-        <div class="od-panel">
-          <div class="od-panel-head"><h3>Recently updated</h3><a href="{{ url_for('owner.products') }}">All products →</a></div>
-          {% for product in recent_products %}
-          <div class="od-product-row"><div class="od-product-name"><strong>{{ product.name }}</strong><span>{{ 'Published' if product.is_published else 'Hidden' }} · {{ product.updated_at.strftime('%d %b %Y') }}</span></div><div class="text-end"><div class="od-product-price">₦{{ '{:,.2f}'.format(product.price|float) }}</div><a class="od-open small" href="{{ url_for('owner.edit_product', product_id=product.id) }}">Edit</a></div></div>
-          {% else %}<div class="od-empty">No products yet. Add your first item to get started.</div>{% endfor %}
-        </div>
+      <section class="od-panel">
+        <div class="od-panel-head"><h2>Recently updated products</h2><a href="{{ url_for('owner.products') }}">Manage all →</a></div>
+        {% for product in recent_products %}
+          <div class="od-product"><div><strong>{{ product.name }}</strong><small>{{ 'Published' if product.is_published else 'Hidden' }} · Updated {{ product.updated_at.strftime('%d %b %Y') }}</small></div><div class="text-end"><div class="od-price">₦{{ '{:,.2f}'.format(product.price|float) }}</div><a class="small od-panel-head-link" href="{{ url_for('owner.edit_product', product_id=product.id) }}">Edit</a></div></div>
+        {% else %}<div class="od-empty">No products yet. Add your first product to get started.</div>{% endfor %}
       </section>
     </main>
   </div>
