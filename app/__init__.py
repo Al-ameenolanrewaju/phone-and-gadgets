@@ -51,7 +51,8 @@ def create_app(config_object=None):
     if database_url.startswith(("postgresql://", "postgresql+psycopg://")):
         # Enforce the tenant schema on every physical DB connection, including
         # pooled connections. Never allow this app to fall back to public.
-        engine = db.engine
+        with app.app_context():
+            engine = db.engine
 
         @event.listens_for(engine, "connect")
         def set_gadgets_search_path(dbapi_connection, connection_record):
