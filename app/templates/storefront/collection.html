@@ -16,10 +16,10 @@
       <select name="storage" data-filter-storage><option value="">All configurations</option>{% for storage in storages %}<option value="{{ storage }}" {% if selected_storage|lower == storage|lower %}selected{% endif %}>{{ storage }}</option>{% endfor %}</select>
     </label>
     <label>Condition
-      <select name="condition" data-filter-condition><option value="">Any condition</option>{% for condition in ["New", "Refurbished", "Used"] %}<option value="{{ condition }}">{{ condition }}</option>{% endfor %}</select>
+      <select name="condition" data-filter-condition><option value="">Any condition</option>{% for condition in ["New", "Refurbished", "Used"] %}<option value="{{ condition }}" {% if selected_condition|lower == condition|lower %}selected{% endif %}>{{ condition }}</option>{% endfor %}</select>
     </label>
     <label>Compatibility
-      <select name="compatibility" data-filter-compatibility><option value="">Any compatibility</option>{% for compatibility in ["Universal", "iOS", "Android", "Windows", "macOS"] %}<option value="{{ compatibility }}">{{ compatibility }}</option>{% endfor %}</select>
+      <select name="compatibility" data-filter-compatibility><option value="">Any compatibility</option>{% for compatibility in ["Universal", "iOS", "Android", "Windows", "macOS"] %}<option value="{{ compatibility }}" {% if selected_compatibility|lower == compatibility|lower %}selected{% endif %}>{{ compatibility }}</option>{% endfor %}</select>
     </label>
     <label>Colour
       <select name="colour" data-filter-colour><option value="">All colours</option>{% for colour in colours %}<option value="{{ colour }}" {% if selected_colour|lower == colour|lower %}selected{% endif %}>{{ colour }}</option>{% endfor %}</select>
@@ -30,7 +30,7 @@
   <div class="product-grid luxury-product-grid collection-product-grid" data-collection-products>
     {% for product in products %}{% include "storefront/_product_card.html" %}{% endfor %}<div class="catalogue-empty-state" data-filter-empty hidden><h3>No matching devices found.</h3><p>Try another category, configuration, condition or compatibility option.</p></div>
   </div>
-  {% if page_count > 1 %}<nav class="catalogue-pagination" aria-label="Collection pages">{% if page > 1 %}<a href="{{ url_for('storefront.category', slug=selected_category.slug, page=page-1) if selected_category else url_for('storefront.collection', page=page-1) }}">Previous</a>{% endif %}<span>Page {{ page }} of {{ page_count }}</span>{% if page < page_count %}<a href="{{ url_for('storefront.category', slug=selected_category.slug, page=page+1) if selected_category else url_for('storefront.collection', page=page+1) }}">Next</a>{% endif %}</nav>{% endif %}
+  {% if page_count > 1 %}<nav class="catalogue-pagination" aria-label="Collection pages">{% if page > 1 %}<a href="{{ url_for('storefront.category', slug=selected_category.slug, page=page-1, storage=selected_storage, colour=selected_colour, condition=selected_condition, compatibility=selected_compatibility) if selected_category else url_for('storefront.collection', page=page-1, storage=selected_storage, colour=selected_colour, condition=selected_condition, compatibility=selected_compatibility) }}">Previous</a>{% endif %}<span>Page {{ page }} of {{ page_count }}</span>{% if page < page_count %}<a href="{{ url_for('storefront.category', slug=selected_category.slug, page=page+1, storage=selected_storage, colour=selected_colour, condition=selected_condition, compatibility=selected_compatibility) if selected_category else url_for('storefront.collection', page=page+1, storage=selected_storage, colour=selected_colour, condition=selected_condition, compatibility=selected_compatibility) }}">Next</a>{% endif %}</nav>{% endif %}
 </main>
 {% include "storefront/_footer.html" %}
 {% endblock %}
