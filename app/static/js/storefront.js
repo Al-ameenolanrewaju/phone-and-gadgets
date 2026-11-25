@@ -167,7 +167,9 @@
       const colours = String(card.dataset.productColours || "").split("|").map(normalizeFilterValue);
       const storageMatch = !selectedStorage || storages.includes(selectedStorage);
       const colourMatch = !selectedColour || colours.includes(selectedColour);
-      const conditionMatch = !selectedCondition || normalizeFilterValue(card.dataset.productCondition) === selectedCondition;\n      const compatibilityMatch = !selectedCompatibility || normalizeFilterValue(card.dataset.productCompatibility) === selectedCompatibility;\n      const show = categoryMatch && storageMatch && colourMatch && conditionMatch && compatibilityMatch;
+      const conditionMatch = !selectedCondition || normalizeFilterValue(card.dataset.productCondition) === selectedCondition;
+      const compatibilityMatch = !selectedCompatibility || normalizeFilterValue(card.dataset.productCompatibility) === selectedCompatibility;
+      const show = categoryMatch && storageMatch && colourMatch && conditionMatch && compatibilityMatch;
       card.hidden = !show;
       if (show) visible += 1;
     });
@@ -396,7 +398,7 @@
     if (pendingPages.has(key)) return pendingPages.get(key);
     const request = fetch(key, { credentials: "same-origin", headers: { "X-Requested-With": "fetch" } })
       .then(response => { if (!response.ok) throw new Error("Navigation request failed"); return response.text(); })
-      .then(html => { pageCache.set(key, html); if (pageCache.storage > 8) pageCache.delete(pageCache.keys().next().value); return html; })
+      .then(html => { pageCache.set(key, html); if (pageCache.size > 8) pageCache.delete(pageCache.keys().next().value); return html; })
       .finally(() => pendingPages.delete(key));
     pendingPages.set(key, request);
     return request;
