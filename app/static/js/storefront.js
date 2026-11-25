@@ -149,7 +149,8 @@
     if (!grid) return;
     const categorySelect = form.querySelector("[data-filter-category]");
     const storageSelect = form.querySelector("[data-filter-storage]");
-    const colourSelect = form.querySelector("[data-filter-colour]");\n    const conditionSelect = form.querySelector("[data-filter-condition]");\n    const compatibilitySelect = form.querySelector("[data-filter-compatibility]");
+    const colourSelect = form.querySelector("[data-filter-colour]");
+    const conditionSelect = form.querySelector("[data-filter-condition]");\n    const compatibilitySelect = form.querySelector("[data-filter-compatibility]");
     const selectedCategory = categorySelect && categorySelect.selectedOptions[0]
       ? normalizeFilterValue(categorySelect.selectedOptions[0].dataset.categoryName)
       : "";
