@@ -126,3 +126,35 @@ def register_sample_catalogue_command(app):
         except Exception:
             db.session.rollback()
             raise
+
+def register_product_image_refresh_command(app):
+    @app.cli.command("refresh-phone-gadgets-product-images")
+    def refresh_phone_gadgets_product_images():
+        """Replace duplicated category photos with product-specific cover images."""
+        business = Business.query.filter_by(slug="phone-gadgets", status="ACTIVE").first()
+        if not business:
+            raise RuntimeError("Phone & Gadgets store not found.")
+        updated = 0
+        try:
+            for product_name, urls in PRODUCT_IMAGES.items():
+                product = Product.query.filter_by(business_id=business.id, name=product_name).first()
+                if not product:
+                    continue
+                for image in list(product.images):
+                    db.session.delete(image)
+                db.session.flush()
+                for position, url in enumerate(urls, 1):
+                    db.session.add(ProductImage(
+                        business_id=business.id,
+                        product_id=product.id,
+                        url=url,
+                        alt_text=f"{product.name} product photo",
+                        sort_order=position - 1,
+                        original_filename=f"product-{product.slug}-{position}.jpg",
+                    ))
+                updated += 1
+            db.session.commit()
+            print(f"Updated product-specific photos for {updated} products.")
+        except Exception:
+            db.session.rollback()
+            raise
