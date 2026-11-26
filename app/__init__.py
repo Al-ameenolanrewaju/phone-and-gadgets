@@ -238,6 +238,24 @@ def create_app(config_object=None):
         return user
 
     @app.before_request
+    def bootstrap_phone_gadgets_on_first_request():
+        """Run the guarded one-time bootstrap after the deployment migration step."""
+        if os.getenv("BOOTSTRAP_PHONE_GADGETS_ON_START", "").strip() != "1":
+            return None
+        if not database_url.startswith(("postgresql://", "postgresql+psycopg://")):
+            raise RuntimeError("Phone & Gadgets startup bootstrap requires PostgreSQL.")
+        lock_key = 731904226
+        with db.engine.connect() as lock_connection:
+            lock_connection.execute(db.text("SELECT pg_advisory_lock(:key)"), {"key": lock_key})
+            try:
+                bootstrap_phone_gadgets.callback()
+                os.environ["BOOTSTRAP_PHONE_GADGETS_ON_START"] = "0"
+                app.logger.info("Phone & Gadgets one-time bootstrap completed.")
+            finally:
+                lock_connection.execute(db.text("SELECT pg_advisory_unlock(:key)"), {"key": lock_key})
+        return None
+
+    @app.before_request
     def resolve_store():
         """Resolve the one configured shop; a connected custom domain may override it."""
         host = (request.host or "").split(":")[0].rstrip(".").lower()
@@ -363,9 +381,5 @@ def create_app(config_object=None):
     @app.errorhandler(404)
     def not_found(error):
         return {"error": "Not found"}, 404
-
-    if os.getenv("BOOTSTRAP_PHONE_GADGETS_ON_START", "").strip() == "1":
-        with app.app_context():
-            bootstrap_phone_gadgets.callback()
 
     return app
