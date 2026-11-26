@@ -262,6 +262,23 @@ def create_app(config_object=None):
         return None
 
     @app.before_request
+    def refresh_phone_gadgets_product_images_once():
+        if os.getenv("REFRESH_PHONE_GADGETS_IMAGES_ON_START", "").strip() != "1":
+            return None
+        lock_key = 731904228
+        with db.engine.connect() as lock_connection:
+            lock_connection.execute(db.text("SELECT pg_advisory_lock(:key)"), {"key": lock_key})
+            try:
+                result = app.test_cli_runner().invoke(args=["refresh-phone-gadgets-product-images"])
+                if result.exit_code != 0:
+                    raise RuntimeError(f"Product image refresh failed: output={result.output!r}; exception={result.exception!r}")
+                os.environ["REFRESH_PHONE_GADGETS_IMAGES_ON_START"] = "0"
+                app.logger.info("Phone & Gadgets product image refresh completed: %s", result.output.strip())
+            finally:
+                lock_connection.execute(db.text("SELECT pg_advisory_unlock(:key)"), {"key": lock_key})
+        return None
+
+    @app.before_request
     def seed_phone_gadgets_sample_catalogue_on_first_request():
         """Run the one-time, duplicate-safe sample catalogue import."""
         if os.getenv("SEED_PHONE_GADGETS_CATALOGUE_ON_START", "").strip() != "1":
