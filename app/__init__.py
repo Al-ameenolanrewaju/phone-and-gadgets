@@ -272,7 +272,7 @@ def create_app(config_object=None):
             try:
                 result = app.test_cli_runner().invoke(args=["seed-phone-gadgets-catalogue"])
                 if result.exit_code != 0:
-                    raise RuntimeError(f"Sample catalogue import failed: {result.output}")
+                    raise RuntimeError(f"Sample catalogue import failed: output={result.output!r}; exception={result.exception!r}")
                 os.environ["SEED_PHONE_GADGETS_CATALOGUE_ON_START"] = "0"
                 app.logger.info("Phone & Gadgets sample catalogue import completed: %s", result.output.strip())
             finally:
