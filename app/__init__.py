@@ -68,7 +68,7 @@ def create_app(config_object=None):
     login_manager.login_view = "auth.login"
 
     from . import models
-    from .demo_catalogue import register_demo_catalogue_command, seed_demo_catalogue_data
+    from .demo_catalogue import register_demo_catalogue_command
     register_demo_catalogue_command(app)
 
     @app.cli.command("bootstrap-store")
@@ -167,8 +167,7 @@ def create_app(config_object=None):
 
         # Safe on every restart after successful setup; never resets an existing password.
         if existing_business and existing_owner and existing_owner.business_id == existing_business.id:
-            added = seed_demo_catalogue_data(existing_business)
-            print(f"Phone & Gadgets bootstrap already completed; {added} demo products added.")
+            print("Phone & Gadgets bootstrap already completed; no demo products were added.")
             return
         if not owner_email or not owner_password:
             raise RuntimeError("Set STORE_OWNER_EMAIL and STORE_OWNER_PASSWORD in the service environment.")
@@ -214,8 +213,7 @@ def create_app(config_object=None):
                             gender=gender,
                         ))
             db.session.commit()
-            added = seed_demo_catalogue_data(business)
-            print(f"Phone & Gadgets store ready; {added} demo products added.")
+            print("Phone & Gadgets store ready; no demo products were added.")
         except IntegrityError:
             db.session.rollback()
             raise RuntimeError("Phone & Gadgets bootstrap encountered an existing database record; no partial setup was saved.")
