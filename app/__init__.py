@@ -68,6 +68,8 @@ def create_app(config_object=None):
     login_manager.login_view = "auth.login"
 
     from . import models
+    from .sample_catalogue import register_sample_catalogue_command
+    register_sample_catalogue_command(app)
     from .demo_catalogue import register_demo_catalogue_command
     register_demo_catalogue_command(app)
 
@@ -253,6 +255,26 @@ def create_app(config_object=None):
                     raise RuntimeError(f"Phone & Gadgets bootstrap failed: {result.output}")
                 os.environ["BOOTSTRAP_PHONE_GADGETS_ON_START"] = "0"
                 app.logger.info("Phone & Gadgets one-time bootstrap completed.")
+            finally:
+                lock_connection.execute(db.text("SELECT pg_advisory_unlock(:key)"), {"key": lock_key})
+        return None
+
+    @app.before_request
+    def seed_phone_gadgets_sample_catalogue_on_first_request():
+        """Run the one-time, duplicate-safe sample catalogue import."""
+        if os.getenv("SEED_PHONE_GADGETS_CATALOGUE_ON_START", "").strip() != "1":
+            return None
+        if not database_url.startswith(("postgresql://", "postgresql+psycopg://")):
+            raise RuntimeError("Sample catalogue import requires PostgreSQL.")
+        lock_key = 731904227
+        with db.engine.connect() as lock_connection:
+            lock_connection.execute(db.text("SELECT pg_advisory_lock(:key)"), {"key": lock_key})
+            try:
+                result = app.test_cli_runner().invoke(args=["seed-phone-gadgets-catalogue"])
+                if result.exit_code != 0:
+                    raise RuntimeError(f"Sample catalogue import failed: {result.output}")
+                os.environ["SEED_PHONE_GADGETS_CATALOGUE_ON_START"] = "0"
+                app.logger.info("Phone & Gadgets sample catalogue import completed: %s", result.output.strip())
             finally:
                 lock_connection.execute(db.text("SELECT pg_advisory_unlock(:key)"), {"key": lock_key})
         return None
