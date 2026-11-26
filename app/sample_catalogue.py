@@ -20,7 +20,7 @@ PHONE_IMAGES = [
 ]
 GADGET_IMAGES = [
     "https://cdn.shopify.com/s/files/1/0689/2932/3085/collections/a-bunch-of-electronics.png?v=1769371963",
-    "https://gizzmo.si/artikli-slike/94385/teen-tech-kit-komplet-za-glasbo-in-urejeno-mizo-src-uncropped.jpg",
+    "https://gizzmo.si/artikli-slike/94385/teen-tech-kit-komplet-za-glasbo-in-urejeno-mizo-za-vse-mlade-tudi-po-srcu-src-uncropped.jpg",
     "https://doctorhead.ru/upload/dev2fun.imagecompress/webp/iblock/f89/p1co9ffl6gx30b06ojtkpg01gbydk6sr/IMG_4448.webp",
 ]
 
