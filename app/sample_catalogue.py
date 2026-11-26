@@ -13,9 +13,9 @@ from .utils import slugify
 # sharing one category-wide image across unrelated products.
 PRODUCT_IMAGES = {
     "Apple iPhone 13 128GB": [
-        "https://fdn2.gsmarena.com/vv/pics/apple/apple-iphone-13-1.jpg",
-        "https://fdn2.gsmarena.com/vv/pics/apple/apple-iphone-13-2.jpg",
-        "https://fdn2.gsmarena.com/vv/pics/apple/apple-iphone-13-3.jpg",
+        "https://api.priceinkenya.com/media/124610/conversions/iphone13d-original.webp",
+        "https://www.pbtech.co.nz/imgprod/M/P/MPHAPP513101__1.jpg?h=751000361",
+        "https://media.itechstore.com.np/f_webp/img/product/variants/3ed0d25e-8e25-43fb-a146-426f1d615d9b/iphone-13-pink-main.png",
     ],
     "Apple iPhone 11 64GB": [
         "https://fdn2.gsmarena.com/vv/pics/apple/apple-iphone-11-1.jpg",
