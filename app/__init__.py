@@ -54,13 +54,13 @@ def create_app(config_object=None):
         with app.app_context():
             engine = db.engine
 
-        @event.listens_for(engine, "connect")
-        def set_gadgets_search_path(dbapi_connection, connection_record):
-            cursor = dbapi_connection.cursor()
-            try:
-                cursor.execute("SET search_path TO gadgets")
-            finally:
-                cursor.close()
+        @event.listens_for(engine, "begin")
+        def set_gadgets_search_path(connection):
+            # Supabase PgBouncer may use transaction pooling, so a physical
+            # connection's session-level search_path is not reliable. Apply
+            # the schema inside every transaction, on the backend assigned
+            # to that transaction, before application SQL is executed.
+            connection.exec_driver_sql("SET LOCAL search_path TO gadgets")
 
     migrate.init_app(app, db)
     login_manager.init_app(app)
