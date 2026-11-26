@@ -159,7 +159,7 @@ def register_sample_catalogue_command(app):
         }
         db.session.execute(db.text("SET LOCAL search_path TO gadgets"))
         try:
-            for index, (name, price, category_name, storage, colour, images) in enumerate(PRODUCTS, 1):
+            for index, (name, price, category_name, storage, colour) in enumerate(PRODUCTS, 1):
                 category = categories.get(category_name.lower())
                 if not category:
                     raise RuntimeError(f"Missing store category: {category_name}")
