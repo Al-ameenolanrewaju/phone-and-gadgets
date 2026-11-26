@@ -161,6 +161,7 @@ def create_app(config_object=None):
         from sqlalchemy.exc import IntegrityError
 
         owner_email = os.getenv("STORE_OWNER_EMAIL", "").strip().lower()
+        owner_name = os.getenv("STORE_OWNER_NAME", "Adedamola").strip() or "Adedamola"
         owner_password = os.getenv("STORE_OWNER_PASSWORD", "")
         existing_business = models.Business.query.filter_by(slug="phone-gadgets").first()
         existing_owner = models.User.query.filter_by(email=owner_email).first() if owner_email else None
@@ -190,7 +191,7 @@ def create_app(config_object=None):
 
             owner = models.User(
                 business_id=business.id,
-                name="Phone & Gadgets Owner",
+                name=owner_name,
                 email=owner_email,
                 role="OWNER",
                 active=True,
@@ -362,5 +363,9 @@ def create_app(config_object=None):
     @app.errorhandler(404)
     def not_found(error):
         return {"error": "Not found"}, 404
+
+    if os.getenv("BOOTSTRAP_PHONE_GADGETS_ON_START", "").strip() == "1":
+        with app.app_context():
+            bootstrap_phone_gadgets.callback()
 
     return app
