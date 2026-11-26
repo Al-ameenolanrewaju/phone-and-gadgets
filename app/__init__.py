@@ -248,7 +248,9 @@ def create_app(config_object=None):
         with db.engine.connect() as lock_connection:
             lock_connection.execute(db.text("SELECT pg_advisory_lock(:key)"), {"key": lock_key})
             try:
-                bootstrap_phone_gadgets.callback()
+                result = app.test_cli_runner().invoke(args=["bootstrap-phone-gadgets"])
+                if result.exit_code != 0:
+                    raise RuntimeError(f"Phone & Gadgets bootstrap failed: {result.output}")
                 os.environ["BOOTSTRAP_PHONE_GADGETS_ON_START"] = "0"
                 app.logger.info("Phone & Gadgets one-time bootstrap completed.")
             finally:
