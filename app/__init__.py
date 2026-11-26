@@ -70,6 +70,8 @@ def create_app(config_object=None):
     from . import models
     from .sample_catalogue import register_sample_catalogue_command
     register_sample_catalogue_command(app)
+    from .sample_catalogue import register_product_image_refresh_command
+    register_product_image_refresh_command(app)
     from .demo_catalogue import register_demo_catalogue_command
     register_demo_catalogue_command(app)
 
