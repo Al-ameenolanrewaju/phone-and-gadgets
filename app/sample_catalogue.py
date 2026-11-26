@@ -56,9 +56,12 @@ def register_sample_catalogue_command(app):
         if not business:
             raise RuntimeError("The Phone & Gadgets store has not been bootstrapped.")
         existing = Product.query.filter_by(business_id=business.id).count()
+        if existing >= len(PRODUCTS):
+            print(f"Catalogue already contains {existing} products; seed is complete.")
+            return
         if existing:
             raise RuntimeError(
-                f"Catalogue already contains {existing} products; refusing to add duplicates."
+                f"Catalogue contains {existing} products; refusing a partial/duplicate import."
             )
         categories = {
             c.name.lower(): c
