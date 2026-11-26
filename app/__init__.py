@@ -108,8 +108,8 @@ def create_app(config_object=None):
             ).first()
             if another_owner:
                 raise RuntimeError("This store already has a different owner account; refusing to add or replace an owner.")
-        if not existing_owner and (not owner_password or len(owner_password) < 12):
-            raise RuntimeError("Set STORE_OWNER_PASSWORD to a unique password of at least 12 characters.")
+        if not existing_owner and (not owner_password or len(owner_password) < 8):
+            raise RuntimeError("Set STORE_OWNER_PASSWORD to a password of at least 8 characters.")
 
         try:
             if business is None:
@@ -169,8 +169,8 @@ def create_app(config_object=None):
         if existing_business and existing_owner and existing_owner.business_id == existing_business.id:
             print("Phone & Gadgets bootstrap already completed; no demo products were added.")
             return
-        if not owner_email or not owner_password:
-            raise RuntimeError("Set STORE_OWNER_EMAIL and STORE_OWNER_PASSWORD in the service environment.")
+        if not owner_email or not owner_password or len(owner_password) < 8:
+            raise RuntimeError("Set STORE_OWNER_EMAIL and a STORE_OWNER_PASSWORD of at least 8 characters in the service environment.")
         if existing_owner:
             raise RuntimeError("STORE_OWNER_EMAIL is already assigned to a different account.")
         if existing_business and existing_business.status != "ACTIVE":
