@@ -11,18 +11,30 @@ from . import db
 from .models import Business, Category, Product, ProductImage, ProductVariant
 from .utils import slugify
 
-# Three illustrative gallery photos per listing. These are public product/editorial
-# image URLs; they are not guaranteed to depict the exact model in each title.
-PHONE_IMAGES = [
-    "https://images.unsplash.com/photo-1729514552998-cdb2975826cf?auto=format&fit=crop&w=1200&q=85",
-    "https://images-bonnier.imgix.net/files/kom/production/2024/10/17130840/android-vs-iphone.jpg?auto=format&fit=crop&w=1200&q=85",
-    "https://images.unsplash.com/photo-1729514552998-cdb2975826cf?auto=format&fit=crop&w=1200&q=85&sat=-15",
-]
-GADGET_IMAGES = [
-    "https://cdn.shopify.com/s/files/1/0689/2932/3085/collections/a-bunch-of-electronics.png?v=1769371963",
-    "https://gizzmo.si/artikli-slike/94385/teen-tech-kit-komplet-za-glasbo-in-urejeno-mizo-za-vse-mlade-tudi-po-srcu-src-uncropped.jpg",
-    "https://doctorhead.ru/upload/dev2fun.imagecompress/webp/iblock/f89/p1co9ffl6gx30b06ojtkpg01gbydk6sr/IMG_4448.webp",
-]
+# Product-specific cover images. Each listing gets its own image rather than
+# sharing one category-wide image across unrelated products.
+PRODUCT_IMAGES = {
+    "Apple iPhone 13 128GB": ["https://fdn2.gsmarena.com/vv/pics/apple/apple-iphone-13-01.jpg"],
+    "Apple iPhone 11 64GB": ["https://fdn2.gsmarena.com/vv/pics/apple/apple-iphone-11-1.jpg"],
+    "Samsung Galaxy A15 128GB": ["https://plazait.co.id/uploads/products/gallery/ginee_20240821170545772_9619520084.jpg"],
+    "Samsung Galaxy A05s 128GB": ["https://fdn2.gsmarena.com/vv/pics/samsung/samsung-galaxy-a05s-1.jpg"],
+    "Samsung Galaxy S23 256GB": ["https://cdn-files.kimovil.com/default/0008/33/thumb_732931_default_big.jpg"],
+    "Tecno Spark 20 256GB": ["https://sota.store/image/cache/catalog/Tecno/tecno-Spark-20-KJ5n-gld-02-1600x1600.webp"],
+    "Tecno Camon 20 256GB": ["https://fdn2.gsmarena.com/vv/pics/tecno/tecno-camon-20-1.jpg"],
+    "Infinix Hot 40i 128GB": ["https://fdn2.gsmarena.com/vv/pics/infinix/infinix-hot-40i-1.jpg"],
+    "Infinix Note 30 256GB": ["https://cdn.hoanghamobile.vn/Uploads/2023/08/21/infinix-note-30-4.png"],
+    "Redmi 13C 128GB": ["https://www.mi.com/ng/product/redmi-13c/"],
+    "HP Core i5 Laptop 8GB RAM": ["https://media.loveitopcdn.com/25799/thumb/10933-hp-elitebook-830-g8-3.jpg"],
+    "Lenovo ThinkPad Core i5": ["https://www.notebookcheck.net/fileadmin/Notebooks/Lenovo/ThinkPad_T480/4zu3_T480.jpg"],
+    "Samsung Galaxy Tab A8": ["https://fdn2.gsmarena.com/vv/pics/samsung/samsung-galaxy-tab-a8-10-5-1.jpg"],
+    "Oraimo 20000mAh Power Bank": ["https://djokstore.ci/cdn/shop/files/1_50471d38-dc64-4268-88ce-49609bf1e8ed.jpg?v=1699532264"],
+    "Oraimo FreePods 3 Earbuds": ["https://tunzaa.nyc3.digitaloceanspaces.com/products/cover_images/825_0_1757433879.jpg"],
+    "Oraimo BoomPop 2 Headphones": ["https://www.oraimo.com/cdn/shop/files/boompop2-black.png"],
+    "Oraimo SoundGo 2 Bluetooth Speaker": ["https://www.oraimo.com/cdn/shop/files/soundgo2-black.png"],
+    "Oraimo Watch 4 Plus Smartwatch": ["https://www.oraimo.com/cdn/shop/files/watch4plus-black.png"],
+    "20W USB-C Fast Charger": ["https://www.oraimo.com/cdn/shop/files/charger-20w.png"],
+    "USB-C Fast Charging Cable": ["https://www.oraimo.com/cdn/shop/files/usb-c-cable.png"],
+}
 
 PRODUCTS = [
     ("Apple iPhone 13 128GB", 485000, "iPhone", "128GB", "Midnight", PHONE_IMAGES),
@@ -51,7 +63,7 @@ PRODUCTS = [
 def register_sample_catalogue_command(app):
     @app.cli.command("seed-phone-gadgets-catalogue")
     def seed_phone_gadgets_catalogue():
-        """Add 20 sample products, each with a three-photo gallery, once."""
+        """Add 20 sample products with product-specific cover photos, once."""
         business = Business.query.filter_by(slug="phone-gadgets", status="ACTIVE").first()
         if not business:
             raise RuntimeError("The Phone & Gadgets store has not been bootstrapped.")
@@ -100,7 +112,7 @@ def register_sample_catalogue_command(app):
                     stock_quantity=0,
                     is_available=False,
                 ))
-                for position, url in enumerate(images, 1):
+                for position, url in enumerate(PRODUCT_IMAGES[name], 1):
                     db.session.add(ProductImage(
                         business_id=business.id,
                         product_id=product.id,
@@ -110,7 +122,7 @@ def register_sample_catalogue_command(app):
                         original_filename=f"sample-{index:02d}-{position:02d}.jpg",
                     ))
             db.session.commit()
-            print("Added 20 sample products with 3 gallery photos each (60 image entries).")
+            print("Added 20 sample products with product-specific cover photos.")
         except Exception:
             db.session.rollback()
             raise
